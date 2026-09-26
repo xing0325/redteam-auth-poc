@@ -1,0 +1,2736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>历史人物原型测试</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #eef4fb;
+            --bg-soft: #e0ebf7;
+            --bg-card: #ffffff;
+            --bg-hover: #e6f0fa;
+            --text: #17263f;
+            --text-secondary: #42557a;
+            --text-muted: #8399bd;
+            --accent: #2563eb;
+            --accent-bright: #5b8cff;
+            --accent-deep: #1d4fc4;
+            --accent-rgb: 37,99,235;
+            --accent-soft: rgba(var(--accent-rgb),0.08);
+            --accent-border: rgba(var(--accent-rgb),0.2);
+            --accent-glow: rgba(var(--accent-rgb),0.1);
+            --warm: #e8a04c;
+            --warm-rgb: 232,160,76;
+            --warm-soft: rgba(var(--warm-rgb),0.1);
+            --border: rgba(25,55,120,0.12);
+            --radius: 14px;
+            --shadow-rgb: 25,55,120;
+            --shadow: 0 2px 12px rgba(var(--shadow-rgb),0.06);
+            --track: #dce7f6;
+            --level-low: #8d9cb8;
+            --hero-1: #e0ecfc;
+            --hero-2: #f0f6fe;
+            --hero-3: #ffffff;
+            --core-1: #e7f0fc;
+            --core-2: #ffffff;
+        
+        }
+
+        body[data-theme="fresh"] {
+            --bg: #f4f8f9;
+            --bg-soft: #eaf2f4;
+            --bg-card: #ffffff;
+            --bg-hover: #eef5f6;
+            --text: #1e2d35;
+            --text-secondary: #4f6b76;
+            --text-muted: #8aa3ac;
+            --accent: #3da89c;
+            --accent-bright: #5ec7bc;
+            --accent-deep: #359187;
+            --accent-rgb: 61,168,156;
+            --accent-soft: rgba(var(--accent-rgb),0.08);
+            --accent-border: rgba(var(--accent-rgb),0.2);
+            --accent-glow: rgba(var(--accent-rgb),0.1);
+            --warm: #f0a070;
+            --warm-rgb: 240,160,112;
+            --warm-soft: rgba(var(--warm-rgb),0.1);
+            --border: rgba(0,0,0,0.06);
+            --radius: 14px;
+            --shadow-rgb: 30,80,90;
+            --shadow: 0 2px 12px rgba(var(--shadow-rgb),0.06);
+            --track: #e4edef;
+            --level-low: #a09080;
+            --hero-1: #e8f5f3;
+            --hero-2: #f4faf9;
+            --hero-3: #ffffff;
+            --core-1: #f0faf8;
+            --core-2: #ffffff;
+        }
+
+        body[data-theme="paper"] {
+            --bg: #f1e8d5;
+            --bg-soft: #e7dcc3;
+            --bg-card: #faf5e8;
+            --bg-hover: #f3ebd8;
+            --text: #3a3020;
+            --text-secondary: #6e5f46;
+            --text-muted: #a39473;
+            --accent: #a3532e;
+            --accent-bright: #c07a52;
+            --accent-deep: #87422a;
+            --accent-rgb: 163,83,46;
+            --accent-soft: rgba(var(--accent-rgb),0.08);
+            --accent-border: rgba(var(--accent-rgb),0.2);
+            --accent-glow: rgba(var(--accent-rgb),0.1);
+            --warm: #b98a4e;
+            --warm-rgb: 185,138,78;
+            --warm-soft: rgba(var(--warm-rgb),0.1);
+            --border: rgba(96,74,42,0.14);
+            --radius: 14px;
+            --shadow-rgb: 96,74,42;
+            --shadow: 0 2px 12px rgba(var(--shadow-rgb),0.06);
+            --track: #e5dabe;
+            --level-low: #9c8b74;
+            --hero-1: #f2e7cf;
+            --hero-2: #f7f0df;
+            --hero-3: #faf5e8;
+            --core-1: #f5ecd6;
+            --core-2: #faf5e8;
+        }
+
+        
+        body[data-theme="crimson"] {
+            --bg: #f8efec;
+            --bg-soft: #f0e0da;
+            --bg-card: #fffcfb;
+            --bg-hover: #f6e9e4;
+            --text: #3a2626;
+            --text-secondary: #74565a;
+            --text-muted: #ab8e8e;
+            --accent: #b04040;
+            --accent-bright: #c76464;
+            --accent-deep: #8f3030;
+            --accent-rgb: 176,64,64;
+            --warm: #c9a05a;
+            --warm-rgb: 201,160,90;
+            --border: rgba(120,50,50,0.10);
+            --shadow-rgb: 90,45,45;
+            --track: #ecdbd5;
+            --level-low: #a8908a;
+            --hero-1: #f7e4de;
+            --hero-2: #fbf0ec;
+            --hero-3: #fffcfb;
+            --core-1: #f9e8e2;
+            --core-2: #fffcfb;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        /* clip 不产生滚动容器，规避 iOS/微信内核键盘收起后的滚动冻结；老内核退回 hidden */
+        html { overflow-x: hidden; overflow-x: clip; overscroll-behavior-y: contain; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            width: 100%;
+            touch-action: manipulation;
+        }
+
+        button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; cursor: pointer; }
+
+        .hidden { display: none !important; }
+
+        .ambient {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .ambient::before {
+            content: '';
+            position: absolute;
+            top: -20%; right: -10%;
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(var(--accent-rgb),0.04) 0%, transparent 60%);
+            opacity: 1;
+        }
+        .ambient::after {
+            content: '';
+            position: absolute;
+            bottom: -20%; left: -10%;
+            width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(var(--warm-rgb),0.03) 0%, transparent 60%);
+            opacity: 1;
+        }
+
+        .wrap {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 64px 20px 80px;
+        }
+
+        @media (max-width: 480px) {
+            .wrap { padding: 32px 16px 64px; }
+        }
+
+        /* === INTRO === */
+        .intro-hero {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+        .intro-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        .intro-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+        .intro-title span {
+            color: var(--accent);
+            font-weight: 900;
+        }
+        .intro-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            max-width: 480px;
+            margin: 0 auto 48px;
+        }
+
+        .intro-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        .intro-feature {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            text-align: left;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .intro-feature:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-border);
+        }
+        .intro-feature-num {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .intro-feature h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .intro-feature p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .intro-meta {
+            color: var(--text-muted);
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .intro-meta span {
+            margin: 0 10px;
+        }
+
+        .btn-primary {
+            flex: 1;
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: var(--accent-deep);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* === QUIZ === */
+        .quiz-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .quiz-back {
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            transition: color 0.2s;
+            user-select: none;
+        }
+        .quiz-back:hover { color: var(--text); }
+        .quiz-counter {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .progress-track {
+            height: 4px;
+            background: var(--track);
+            border-radius: 2px;
+            margin-bottom: 48px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .question-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 2px solid rgba(var(--accent-rgb),0.5);
+            border-radius: var(--radius);
+            padding: 44px 36px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .question-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .question-text {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 24px;
+            font-weight: 500;
+            line-height: 1.5;
+            margin-bottom: 36px;
+            text-align: left;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            width: 100%;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            text-align: left;
+            font-size: 15px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.2s;
+        }
+        .option:hover {
+            border-color: var(--accent-border);
+            color: var(--text);
+            background: var(--bg-hover);
+            transform: translateY(-1px);
+        }
+        .option.selected {
+            border-color: var(--accent-border);
+            background: var(--accent-soft);
+            color: var(--text);
+        }
+        .option.selected::before {
+            transform: scaleY(1);
+        }
+        .option-key {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 16px;
+            margin-top: 1px;
+            transition: all 0.2s;
+            color: var(--text-muted);
+            background: var(--bg-card);
+        }
+        .option:hover .option-key {
+            border-color: var(--accent-border);
+            color: var(--accent);
+        }
+        .option.selected .option-key {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .option-text { line-height: 1.6; padding-top: 3px; }
+
+        .quiz-nav {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+        .btn-prev, .btn-next {
+            flex: 1;
+            min-height: 52px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-prev {
+            background: transparent;
+            color: var(--text-secondary);
+        }
+        .btn-prev:hover {
+            border-color: var(--accent-border);
+            color: var(--text);
+            background: var(--bg-hover);
+        }
+        .btn-next {
+            background: var(--bg-hover);
+            color: var(--text-muted);
+            border-color: transparent;
+            pointer-events: none;
+        }
+        .btn-next.active {
+            background: var(--accent);
+            color: #fff;
+            pointer-events: auto;
+        }
+        .btn-next.active:hover {
+            background: var(--accent-deep);
+        }
+
+        /* === RESULT === */
+        .report-header {
+            text-align: center;
+            padding: 20px 0 0;
+            margin-bottom: 0;
+            position: relative;
+        }
+        .report-header::before, .report-header::after {
+            content: '';
+            position: absolute;
+            top: 32px;
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+        .report-header::before { left: calc(50% - 120px); }
+        .report-header::after { right: calc(50% - 120px); }
+        .report-stamp {
+            display: inline-block;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--accent);
+            letter-spacing: 1px;
+            line-height: 1.1;
+            text-align: center;
+            margin: 0 auto 12px;
+            background: var(--bg-card);
+            position: relative;
+        }
+        .report-stamp::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            border: 1px solid var(--accent-border);
+        }
+        .report-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 4px;
+        }
+        .report-sub {
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+        .report-id-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            padding: 12px 0;
+            margin-top: 16px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .report-id-line span { font-variant-numeric: tabular-nums; }
+
+        .result-hero {
+            text-align: center;
+            margin: 0 -20px 0;
+            position: relative;
+            padding: 44px 24px 48px;
+            background: linear-gradient(180deg, var(--hero-1) 0%, var(--hero-2) 40%, var(--hero-3) 100%);
+            border-radius: 0 0 32px 32px;
+            overflow: hidden;
+            color: var(--text);
+        }
+        .result-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(var(--accent-rgb),0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(var(--warm-rgb),0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .result-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 10%; right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-border), transparent);
+            pointer-events: none;
+        }
+        .result-hero > * { position: relative; z-index: 1; }
+        .result-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        .match-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-soft);
+            border: 1px solid var(--accent-border);
+            color: var(--accent);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin: 0 auto 28px;
+            position: relative;
+        }
+        .match-badge::before, .match-badge::after {
+            content: '◆';
+            font-size: 5px;
+            color: var(--accent);
+            opacity: 0.5;
+        }
+        @keyframes badge-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb),0.2); }
+            50% { box-shadow: 0 0 0 8px rgba(var(--accent-rgb),0); }
+        }
+        .match-badge { animation: badge-pulse 2.5s ease-in-out infinite; }
+        .match-badge > span:first-child { display: none; }
+        .result-name {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 64px;
+            font-weight: 900;
+            margin-bottom: 6px;
+            letter-spacing: 8px;
+            color: var(--text);
+            line-height: 1.1;
+        }
+        .name-deco {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .name-deco-line {
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 1px;
+        }
+        .name-deco-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+        .result-title {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+        .result-quote {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 15px;
+            color: var(--text-secondary);
+            max-width: 480px;
+            margin: 0 auto;
+            line-height: 2;
+            position: relative;
+            padding: 0 24px;
+            font-style: italic;
+        }
+        .result-quote::before, .result-quote::after {
+            font-size: 28px;
+            color: var(--accent);
+            opacity: 0.3;
+            font-family: Georgia, serif;
+            position: absolute;
+            line-height: 1;
+        }
+        .result-quote::before { content: '"'; left: -4px; top: -4px; }
+        .result-quote::after { content: '"'; right: -4px; bottom: -16px; }
+
+        .result-score-ring-wrap {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin: -24px auto 32px;
+            position: relative;
+            z-index: 2;
+        }
+        .score-ring-item {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            text-align: center;
+            min-width: 100px;
+            box-shadow: 0 8px 28px rgba(var(--shadow-rgb),0.10);
+        }
+        .score-ring-item:first-child { border-radius: 16px 0 0 16px; border-right: none; }
+        .score-ring-item:last-child { border-radius: 0 16px 16px 0; border-left: none; }
+        .score-ring-item.middle {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+            border-color: var(--accent);
+            color: #fff;
+            transform: scaleY(1.08);
+            box-shadow: 0 8px 28px rgba(var(--accent-rgb),0.35);
+        }
+        .score-ring-item.middle .meta-label { color: rgba(255,255,255,0.7); }
+        .score-ring-item.middle .meta-value { color: #fff; }
+        .meta-value {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--text);
+            font-family: 'Noto Serif SC', serif;
+            line-height: 1.2;
+        }
+        .meta-dim {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-weight: 500;
+        }
+        .score-ring-item.middle .meta-dim { color: rgba(255,255,255,0.7); }
+        .meta-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            margin-top: 6px;
+            text-transform: uppercase;
+        }
+
+        .data-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+        .chart-title {
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chart-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent-border), transparent);
+        }
+        .chart-wrap {
+            position: relative;
+            height: 300px;
+            width: 100%;
+            background: radial-gradient(circle at center, rgba(var(--accent-rgb),0.03) 0%, transparent 70%);
+            border-radius: 12px;
+        }
+        .dim-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        .dim-row:hover { background: var(--accent-soft); }
+        .dim-row:last-child { margin-bottom: 0; }
+        .dim-rank {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            margin-right: 10px;
+            flex-shrink: 0;
+            background: var(--bg-soft);
+            color: var(--text-muted);
+        }
+        .dim-row.top .dim-rank { background: var(--accent); color: #fff; }
+        .dim-name {
+            width: 56px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .dim-bar-bg {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-soft);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .dim-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .dim-bar-fill::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%);
+            animation: barShine 2s ease-in-out infinite;
+        }
+        @keyframes barShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .dim-value {
+            width: 40px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            text-align: right;
+            margin-left: 12px;
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .dim-row.top .dim-value { color: var(--accent); }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .section-num {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--accent);
+            opacity: 0.3;
+            line-height: 1;
+            min-width: 32px;
+        }
+        .section-title-group { flex: 1; }
+        .section-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 1px;
+        }
+        .section-title-en {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+        .section-divider {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent-border), transparent);
+        }
+
+        .result-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        .result-section::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--accent), var(--accent-bright));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .result-section:hover {
+            border-color: var(--accent-border);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(var(--shadow-rgb),0.08);
+        }
+        .result-section:hover::before { opacity: 1; }
+        .result-section h4 {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            font-size: 11px;
+            background: var(--accent-soft);
+            border-radius: 4px;
+        }
+        .result-section p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.85;
+            text-align: left;
+        }
+        .answer-evidence { display: grid; gap: 10px; }
+        .evidence-item {
+            padding: 13px 15px;
+            border-radius: 9px;
+            background: var(--accent-soft);
+            border: 1px solid rgba(var(--accent-rgb), 0.10);
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.65;
+        }
+        .evidence-item strong { color: var(--text); font-weight: 600; }
+        .evidence-link {
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.7;
+            margin-top: 4px;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .two-col .result-section {
+            padding: 24px;
+            margin-bottom: 0;
+        }
+        .two-col .result-section h4 { margin-bottom: 10px; }
+        .two-col .result-section p {
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .insight-pair { gap: 16px; margin-bottom: 16px; }
+        .insight-pair .insight-card {
+            --card-rgb: var(--accent-rgb);
+            padding: 28px 24px 24px;
+            margin: 0;
+            min-height: 250px;
+            border-color: rgba(var(--card-rgb), .14);
+            background:
+                radial-gradient(circle at 100% 0%, rgba(var(--card-rgb), .10), transparent 36%),
+                linear-gradient(145deg, var(--bg-card), rgba(var(--card-rgb), .025));
+        }
+        .insight-pair .insight-card::before {
+            width: 4px;
+            opacity: 1;
+            background: linear-gradient(180deg, rgba(var(--card-rgb), .95), rgba(var(--card-rgb), .22));
+        }
+        .insight-pair .insight-card::after {
+            content: attr(data-index);
+            position: absolute;
+            right: 18px;
+            top: 14px;
+            color: rgba(var(--card-rgb), .18);
+            font-family: 'Noto Serif SC', serif;
+            font-size: 34px;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+        .insight-pair .insight-card h4 { position: relative; z-index: 1; margin-bottom: 16px; padding-right: 38px; }
+        .insight-pair .insight-card .section-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 9px;
+            background: rgba(var(--card-rgb), .10);
+            color: rgb(var(--card-rgb));
+            font-size: 13px;
+        }
+        .insight-pair .insight-card p { position: relative; z-index: 1; }
+        .insight-tension, .insight-shadow { --card-rgb: var(--warm-rgb) !important; }
+        .insight-path, .insight-growth { --card-rgb: var(--accent-rgb) !important; }
+        .insight-lifestyle, .insight-relation { --card-rgb: var(--warm-rgb) !important; }
+        .insight-pattern::after { content: '01' !important; }
+        .insight-tension::after { content: '02' !important; }
+        .insight-perceived::after { content: '03' !important; }
+        .insight-shadow::after { content: '04' !important; }
+        .insight-path::after { content: '05' !important; }
+        .insight-lifestyle::after { content: '06' !important; }
+        .insight-relation::after { content: '07' !important; }
+        .insight-growth::after { content: '08' !important; }
+        .insight-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(var(--shadow-rgb), .10); }
+        @media (max-width: 540px) {
+            .two-col { grid-template-columns: 1fr; }
+            .two-col .result-section { margin-bottom: 12px; }
+            .insight-pair { gap: 0; margin-bottom: 0; }
+            .insight-pair .insight-card { min-height: 0; padding: 25px 22px 22px; }
+            .result-hero { margin: 0 -16px 0; padding: 36px 20px 40px; border-radius: 0 0 24px 24px; }
+            .result-name { font-size: 48px; letter-spacing: 6px; }
+            .score-ring-item { padding: 16px 14px; min-width: 80px; }
+            .meta-value { font-size: 18px; }
+        }
+
+        .result-core-section {
+            text-align: center;
+            padding: 36px 32px;
+            background: linear-gradient(135deg, var(--core-1) 0%, var(--core-2) 100%);
+            border: 1px solid var(--accent-border);
+        }
+        .result-core-section::before { display: none; }
+        .core-statement {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 17px;
+            color: var(--text);
+            line-height: 2;
+            margin: 0;
+            position: relative;
+            padding: 0 28px;
+        }
+        .core-statement::before {
+            content: '❝';
+            position: absolute;
+            left: 0; top: -12px;
+            font-size: 40px;
+            color: var(--accent);
+            opacity: 0.25;
+            font-family: Georgia, serif;
+        }
+        .core-statement::after {
+            content: '❞';
+            position: absolute;
+            right: 0; bottom: -24px;
+            font-size: 40px;
+            color: var(--accent);
+            opacity: 0.25;
+            font-family: Georgia, serif;
+        }
+
+        .similar-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 540px) {
+            .similar-list { grid-template-columns: 1fr; }
+        }
+        .similar-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 16px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: default;
+        }
+        .similar-card:hover {
+            border-color: var(--accent-border);
+            background: var(--accent-soft);
+            transform: translateY(-2px);
+        }
+        .similar-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 18px;
+            font-weight: 900;
+            color: #fff;
+            margin: 0 auto 10px;
+            box-shadow: 0 4px 12px rgba(var(--accent-rgb),0.25);
+        }
+        .similar-name {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+        .similar-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .similar-pct {
+            display: inline-block;
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: 700;
+            background: var(--accent-soft);
+            padding: 3px 10px;
+            border-radius: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .dim-insight-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .dim-insight-item:last-child { border-bottom: none; }
+        .dim-insight-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .dim-insight-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .dim-insight-score {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
+        .dim-insight-level {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .dim-insight-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            padding-left: 0;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+        .btn-outline, .btn-primary {
+            flex: 1;
+            padding: 16px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            letter-spacing: 1px;
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-outline:hover {
+            border-color: var(--accent-border);
+            background: var(--bg-hover);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(var(--accent-rgb),0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(var(--accent-rgb),0.4);
+        }
+
+        .report-footer {
+            text-align: center;
+            padding: 32px 0 0;
+            margin-top: 16px;
+        }
+        .report-footer-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        .report-footer-line::before, .report-footer-line::after {
+            content: '';
+            width: 40px;
+            height: 1px;
+            background: var(--accent-border);
+        }
+        .report-footer-diamond {
+            width: 6px; height: 6px;
+            background: var(--accent);
+            transform: rotate(45deg);
+        }
+        .report-footer-text {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            line-height: 1.8;
+        }
+
+        /* LOADING SCREEN */
+        .loading-wrap {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .loading-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+        .loading-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--accent);
+            border-right-color: var(--accent);
+            animation: spin 1s linear infinite;
+        }
+        .loading-ring:nth-child(2) {
+            inset: 8px;
+            border-top-color: rgba(var(--accent-rgb),0.35);
+            border-right-color: rgba(var(--accent-rgb),0.35);
+            animation-direction: reverse;
+            animation-duration: 1.5s;
+        }
+        .loading-core {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            font-family: 'Noto Serif SC', serif;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--accent);
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .loading-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 48px;
+            letter-spacing: 1px;
+        }
+        .loading-steps {
+            max-width: 360px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        .loading-step {
+            display: flex;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            opacity: 0.4;
+            transition: opacity 0.4s;
+        }
+        .loading-step.done { opacity: 0.7; }
+        .loading-step.active { opacity: 1; }
+        .step-dot {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 14px;
+            flex-shrink: 0;
+            font-size: 11px;
+            color: var(--text-muted);
+            transition: all 0.3s;
+            background: var(--bg-card);
+        }
+        .loading-step.active .step-dot {
+            border-color: var(--accent);
+            color: var(--accent);
+            animation: pulse-dot 1s ease infinite;
+        }
+        .loading-step.done .step-dot {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        @keyframes pulse-dot {
+            0%,100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb),0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(var(--accent-rgb),0); }
+        }
+        .step-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        .step-pct {
+            margin-left: auto;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+        .loading-bar {
+            height: 4px;
+            background: var(--track);
+            border-radius: 2px;
+            margin-top: 40px;
+            overflow: hidden;
+        }
+        .loading-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .result-section, .data-card, .result-core-section, .result-score-ring-wrap {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .mask { position: fixed; z-index: 2000; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(0, 0, 0, 0.5); display: none; }
+        .mask-loading { z-index: 10000; display: flex; justify-content: center; align-items: center; flex-direction: column; color: #fff; }
+        .layui-layer-btn .layui-layer-btn0 { width: 100% !important; border-color: var(--accent) !important; background-color: var(--accent) !important; height: 40px; line-height: 40px; text-align: center; margin: 0; padding: 0;font-size:14px; }
+
+        /* === THEME SWITCHER === */
+        .theme-switcher {
+            position: fixed;
+            left: 16px;
+            bottom: 16px;
+            z-index: 1200;
+        }
+        .theme-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 16px rgba(var(--shadow-rgb),0.14);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .theme-btn:hover {
+            color: var(--accent);
+            border-color: var(--accent-border);
+            transform: translateY(-2px);
+        }
+        .theme-panel {
+            position: absolute;
+            left: 0;
+            bottom: 58px;
+            width: 196px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 10px 34px rgba(var(--shadow-rgb),0.2);
+            padding: 10px;
+        }
+        .theme-panel-title {
+            font-size: 10px;
+            letter-spacing: 2.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 4px 8px 10px;
+        }
+        .theme-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 9px 8px;
+            border: none;
+            background: transparent;
+            border-radius: 9px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            transition: background 0.2s;
+            text-align: left;
+            font-family: inherit;
+        }
+        .theme-option:hover { background: var(--bg-hover); }
+        .theme-option.active { background: var(--accent-soft); color: var(--text); }
+        .theme-swatch {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .theme-option-name { flex: 1; }
+        .theme-check {
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 700;
+            opacity: 0;
+        }
+        .theme-option.active .theme-check { opacity: 1; }
+        @media (max-width: 480px) {
+            .theme-switcher { left: 12px; bottom: 12px; }
+            .theme-btn { width: 42px; height: 42px; }
+        }
+        </style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="wrap">
+
+    <!-- INTRO -->
+    <div id="screen-intro">
+        <div class="intro-hero">
+            <div class="intro-label">ARCHETYPE ASSESSMENT</div>
+            <h1 class="intro-title">你的性格，<br>和哪位<span>历史人物</span>匹配？</h1>
+            <p class="intro-subtitle">从 32 个真实情境中，看见你在选择、关系与挑战中的六种倾向，并找到最能映照你的历史人物原型。</p>
+        </div>
+
+        <div class="intro-features">
+            <div class="intro-feature">
+                <div class="intro-feature-num">01</div>
+                <h3>六维倾向</h3>
+                <p>领导力、创造力、理性度、同理心、冒险性、坚韧度</p>
+            </div>
+            <div class="intro-feature">
+                <div class="intro-feature-num">02</div>
+                <h3>原型匹配</h3>
+                <p>24 位中国历史人物，依据回答特征进行匹配</p>
+            </div>
+            <div class="intro-feature">
+                <div class="intro-feature-num">03</div>
+                <h3>行为解读</h3>
+                <p>不急着定义你，更想看见你面对选择时的习惯</p>
+            </div>
+            <div class="intro-feature">
+                <div class="intro-feature-num">04</div>
+                <h3>发展建议</h3>
+                <p>看见你擅长的事，也看见下一步可以练习的方向</p>
+            </div>
+        </div>
+
+        <p class="intro-meta"><span>32 道情境题</span>·<span>预计 3–5 分钟</span>·<span>仅供自我探索参考</span></p>
+        <button class="btn-primary" onclick="startTest()">开始测试</button>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="screen-quiz" class="hidden">
+        <div class="quiz-top">
+            <span class="quiz-back" onclick="location.reload()">← 返回首页</span>
+            <span class="quiz-counter" id="quiz-counter">1 / 32</span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+        </div>
+
+        <div class="question-card">
+            <div class="question-label">Question</div>
+            <h3 class="question-text" id="question-text"></h3>
+            <div id="options-container"></div>
+        </div>
+
+        <div class="quiz-nav">
+            <button class="btn-prev" id="btn-prev" onclick="prevQuestion()">上一题</button>
+            <button class="btn-next" id="btn-next" onclick="nextQuestion()">下一题</button>
+        </div>
+    </div>
+
+    <!-- LOADING -->
+    <div id="screen-loading" class="hidden">
+        <div class="loading-wrap">
+            <div class="loading-logo">
+                <div class="loading-ring"></div>
+                <div class="loading-ring"></div>
+                <div class="loading-core">算</div>
+            </div>
+            <div class="loading-title" id="loading-title">正在生成你的专属报告</div>
+            <div class="loading-sub" id="loading-sub">ANALYZING RESPONSE DATA</div>
+            <div class="loading-steps" id="loading-steps"></div>
+            <div class="loading-bar"><div class="loading-bar-fill" id="loading-bar-fill"></div></div>
+        </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="screen-result" class="hidden">
+        <div class="report-header">
+            <div class="report-stamp">测<br>评</div>
+            <div class="report-title">人格原型分析报告</div>
+            <div class="report-sub">PERSONALITY ARCHETYPE REPORT</div>
+            <div class="report-id-line">
+                <span id="report-date"></span>
+                <span>REPORT ID: <span id="report-id"></span></span>
+            </div>
+        </div>
+
+        <div class="result-hero">
+            <div class="result-label">YOUR HISTORICAL ARCHETYPE</div>
+            <div class="match-badge">
+                <span style="display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%;animation:pulse-dot 1.2s ease infinite;"></span>
+                你的性格最接近的历史人物是：
+            </div>
+            <h1 class="result-name" id="result-name"></h1>
+            <div class="name-deco">
+                <div class="name-deco-line"></div>
+                <div class="name-deco-dot"></div>
+                <div class="name-deco-line"></div>
+            </div>
+            <p class="result-title" id="result-title"></p>
+            <p class="result-quote" id="result-quote"></p>
+        </div>
+
+        <div class="result-score-ring-wrap">
+            <div class="score-ring-item">
+                <div class="meta-value" id="meta-top-val"></div>
+                <div class="meta-dim" id="meta-top-name"></div>
+                <div class="meta-label">最突出的倾向</div>
+            </div>
+            <div class="score-ring-item middle">
+                <div class="meta-value" id="meta-proximity"></div>
+                <div class="meta-label">原型契合度</div>
+            </div>
+            <div class="score-ring-item">
+                <div class="meta-value" id="meta-bottom-val"></div>
+                <div class="meta-dim" id="meta-bottom-name"></div>
+                <div class="meta-label">相对不优先</div>
+            </div>
+        </div>
+
+        <div class="data-card">
+            <div class="chart-title">本次作答呈现的六维倾向</div>
+            <div class="chart-wrap" style="height:320px;">
+                <canvas id="radarChart"></canvas>
+            </div>
+        </div>
+
+        <div class="data-card">
+            <div class="chart-title">六个倾向，在这次作答中的呈现</div>
+            <div id="dim-bars"></div>
+        </div>
+
+        <div class="result-section result-core-section">
+            <p id="result-core" class="core-statement"></p>
+        </div>
+
+        <div class="result-section">
+            <h4><span class="section-icon">◎</span>你的选择，如何指向这个结果</h4>
+            <div id="result-evidence" class="answer-evidence"></div>
+        </div>
+
+        <div class="two-col insight-pair">
+            <div class="result-section insight-card insight-pattern">
+                <h4><span class="section-icon">◇</span>你与这个原型的相似之处</h4>
+                <p id="result-pattern"></p>
+            </div>
+            <div class="result-section insight-card insight-tension">
+                <h4><span class="section-icon">⚡</span>这份力量的代价</h4>
+                <p id="result-tension"></p>
+            </div>
+        </div>
+
+        <div class="two-col insight-pair">
+            <div class="result-section insight-card insight-perceived">
+                <h4><span class="section-icon">◉</span>在别人眼中的呈现</h4>
+                <p id="result-perceived"></p>
+            </div>
+            <div class="result-section insight-card insight-shadow">
+                <h4><span class="section-icon">◌</span>压力变大时，容易忽略的一面</h4>
+                <p id="result-shadow"></p>
+            </div>
+        </div>
+
+        <div class="two-col insight-pair">
+            <div class="result-section insight-card insight-path">
+                <h4><span class="section-icon">➤</span>更容易发挥的场景</h4>
+                <p id="result-path"></p>
+            </div>
+            <div class="result-section insight-card insight-lifestyle">
+                <h4><span class="section-icon">❖</span>更能滋养你的生活节奏</h4>
+                <p id="result-lifestyle"></p>
+            </div>
+        </div>
+
+        <div class="two-col insight-pair">
+            <div class="result-section insight-card insight-relation">
+                <h4><span class="section-icon">♡</span>在关系里的习惯</h4>
+                <p id="result-relation"></p>
+            </div>
+            <div class="result-section insight-card insight-growth">
+                <h4><span class="section-icon">↗</span>下一步，可以试试</h4>
+                <p id="result-growth"></p>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <h4><span class="section-icon">✦</span>这次作答呈现的决策偏好</h4>
+            <p id="result-decision"></p>
+        </div>
+
+        <div class="result-section">
+            <h4><span class="section-icon">◈</span>这次作答里的高低倾向</h4>
+            <div id="result-dim-insights"></div>
+        </div>
+
+        <div class="result-section">
+            <h4><span class="section-icon">≈</span>其他可能与你共鸣的原型</h4>
+            <div id="result-similar" class="similar-list"></div>
+        </div>
+
+        <div class="action-btns">
+            <button class="btn-outline" onclick="location.reload()">重新测试</button>
+            <button class="btn-primary" onclick="shareResult()">分享结果</button>
+        </div>
+
+        <div class="report-footer">
+            <div class="report-footer-line">
+                <div class="report-footer-diamond"></div>
+            </div>
+            <div class="report-footer-text">
+                本报告根据本次作答生成，借历史人物映照一种应对方式<br>
+                它不是对你的定义，仅供自我探索与个人成长参考
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="theme-switcher">
+    <button type="button" class="theme-btn" onclick="toggleThemePanel(event)" aria-label="切换界面配色" title="切换界面配色">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle>
+            <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle>
+            <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle>
+            <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle>
+            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"></path>
+        </svg>
+    </button>
+    <div class="theme-panel hidden" id="theme-panel">
+        <div class="theme-panel-title">界面配色</div>
+        <div id="theme-options"></div>
+    </div>
+</div>
+
+<script>
+const DIMS = ['领导力','创造力','理性度','同理心','冒险性','坚韧度'];
+const FIGURES = [
+  {
+    name:'诸葛亮',
+    title:'秩序构建者',
+    quote:'未战而庙算胜者，得算多也。',
+    scores:[12,29,85,8,8,55],
+    core:'你最核心的驱动力，多半是把不确定变成确定。事情越乱，你越安静——别人的焦虑像雨点砸在窗上，你在雨声里铺开一张地图：哪里是路，哪里是坑，哪条道走得最省力。动手之前，你总要先在心里把整件事走过一遍，仿佛棋还没落，胜负已推演到终局。你和诸葛亮相似的地方，不是经历相同，而是这份谋定而后动的次序。他未出茅庐，先定三分天下，靠的不是运气，是把信息榨干式的思考。你可能也是这样：宁可慢一点，也不打没准备的仗。这种性格的价值，往往要在局面越复杂的时候才越明显。',
+    pattern:'遇到困难，你会先收集信息、推演几套方案，再动手。你的优势可以概括成两个字：结构。再乱的局面到你手里，大概率会被拆成一块块可以处理的模块——先做什么、后做什么、哪里有坑，你心里有一条清晰的线。当年刘备三顾茅庐时只有一县之地，诸葛亮给出的不是安慰，而是一份完整的战略规划：联吴、取荆益、待天下有变。你多半也是这样：别人看到的是麻烦，你看到的往往是路线图。',
+    tension:'你的优势自带账单：想得越周全，越难开始。准备对你来说像安全感——灯下改到第五版的方案，字字都对，机会却已随人潮走远。世界不会永远等你算完，有时候60分的行动，胜过100分的计划。越追求确定，越容易被"还没想好"困住，最后困在自己画的完美图纸里。',
+    path:'你适合的环境有三个共同点：问题复杂、周期长、容得下深度思考。真正让你发光的，往往是那种"没人说得清该怎么办"的局面——混乱越多，你的结构化能力越值钱。战略规划、系统设计、咨询分析、复杂项目管理、政策研究这类需要长期主义和框架思维的领域容易让你脱颖而出；反过来，拼手速、拼运气、今天播种明天收割的地方，你的优势大概率施展不开。',
+    perceived:'外人看你沉稳可靠，遇事不慌，总像提前想好了三步，是朋友里天然的智囊。但也可能觉得你想太多、不够果断，少了点说干就干的爽快。当年诸葛亮在蜀中事必躬亲，对手司马懿听说他"食少事烦"，便断定他撑不了太久——连对手都看得清的消耗，他自己往往看不见。你在别人眼里，可能也是那个"什么都好，就是太累"的人。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：用"再准备一下"无限推迟上场。你把大量精力花在推演风险上，反而可能错过那些根本算不出来的机会。诸葛亮六出祁山，事无巨细皆亲自过问，最终积劳成疾，五十四岁病逝于五丈原——他不是输给了对手，多半是输给了自己不肯放手的性格。对你来说，最该学会的可能不是更努力，而是允许不完美。',
+    lifestyle:'如果你生在三国，你大概率不是阵前冲锋的猛将，而是帷幄里摇扇子的那个人——热闹的战场不属于你，你的主场在地图和粮账之间。你要面对的挑战和诸葛亮一样：看得越远，越容易把所有事都扛在自己身上。放到今天，你需要的是有清晰节奏的生活：固定的复盘时间、不被打扰的深度工作空间、一份能看见未来的计划表。规律不是束缚你，是给你供电。',
+    growth:'你的成长方向不是想得更细，而是给思考装一个截止日期。第一，给每个决定设"到点就执行"的期限，到点没想清楚就按现有信息拍板；第二，在小事上练习信任直觉，比如点菜、买衣服，不查测评直接选；第三，把20%的空白留给意外——计划被打破时，先别急着焦虑，那可能正是新机会进来的地方。诸葛亮一生谨慎，但真正的转折点隆中对，恰恰是他年轻时的快意之作。',
+    relation:'友情里你是那个兜底的人：深夜一条"在吗，想问你个事"，多半是冲你来的，你也不推。爱情里你可靠、周全，连对方的未来都悄悄画进了自己的图纸；只是亲密的人有时要的不是方案，是灯下那盏茶还温着、你坐下来的那一会儿。合作中你是天然的军师，能把散乱的想法理成路径，只是别让"我早就提醒过"成为口头禅——你多半是对的，但听多了会累。'
+  },
+  {
+    name:'曹操',
+    title:'现实破局者',
+    quote:'夫英雄者，胸怀大志，腹有良谋。',
+    scores:[92,8,50,8,42,16],
+    core:'你最核心的驱动力，多半是把事情做成。做选择时，你先问的往往不是"别人怎么看"，而是"这条路通不通"——众人还在路口张望，等一个确定的答案，你可能已经折返试错两轮了，袖口沾着灰，心里却有数。你和曹操相似的地方，不是经历相同，而是面对乱局的反应：先快速判断局势，找出真正起作用的变量，再用成本最低的方式切进突破口。他在乎的从来不是名分体面，你在意的往往也只是"这事能不能成"。这种性格不是缺点，只是需要一个有变化、有机会的环境来兑现。',
+    pattern:'遇到障碍，你的第一反应通常不是硬顶，而是绕过、拆解、换条路。你的优势可以概括成三个"快"：判断快、行动快、整合资源快——谁能帮你、什么可以放弃、哪一步先走，你心里很快有数。当年兖州初定、强敌环伺，曹操没有等时机成熟，而是先屯田、先纳降、先把能用的资源攥在手里，硬是把一手乱牌打出了局面。这一点你或许不陌生：不怕从零开始，怕的是被流程拖着原地转圈。',
+    tension:'你的优势自带账单：目标感越强，越容易把路上的人和情绪，看成待办清单上的一行字。进度你盯得紧，节点你记得牢，可别人的感受常常排不进你的优先级。你不是不在乎人，只是默认"把事做成就是最好的交代"——可惜人心不按这个逻辑结算。长期只谈结果、不谈过程，那些本可以同行很久的人，会在某个路口慢慢走散。',
+    path:'你适合的环境有三个共同点：变化快、规则尚未定形、结果可以量化。别人避之不及的不确定，对你反而意味着空间——秩序未定时，行动力比资历值钱。创业、增长业务、危机处理、销售谈判这类"从乱到治"的战场容易让你发光；反过来，层级固定、论资排辈、流程重于结果的地方，大概率会让你窒息。',
+    perceived:'外人看你气场强、反应快、敢拍板，是关键时刻靠得住的人。但也容易觉得你功利、不好亲近：你聊事情直奔主题，很少寒暄，被你评价过"低效"的人多少有点怕你。当年许劭给曹操的评语是"治世之能臣，乱世之奸雄"——同一个人，两极评价。你可能也有类似的体验：欣赏你的人特别欣赏，不熟的人敬而远之。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：把身边的人都折算成筹码。信任被消耗的速度往往比你想象的快，等你察觉重要的人已经不告而别，多半来不及了。晚年的曹操多疑渐重，能对他说真话的人越来越少——实力还在，反馈系统却先坏了。对你来说，最该守住的可能不是某个目标，而是那几个愿意说"不行"的人。',
+    lifestyle:'如果你生在东汉末年，你大概率不是坐而论道的清谈名士，而是白天练兵、晚上筹粮的实干派——乱世对这种性格反而公平，因为它只认结果。你要警惕的挑战和曹操一样：位置越高，说真话的人越少，判断就越依赖自己。放到今天，你需要的节奏是有明确目标、反馈快、留得出独处思考时间；冗长流程和无效社交，会以最快速度耗干你。',
+    growth:'你的成长方向不是变温和，而是给这台发动机装上减震。第一，重要的事先同步再推进，让别人跟得上你的节奏；第二，定期给在乎的人留出时间——不是功利社交，是真正留位置；第三，练习说"这事我也不确定"。示弱不会瓦解你的权威，反而会让更多人愿意帮你。曹操晚年最稀缺的不是谋士，是敢说"不"的人——你也一样。',
+    relation:'友情里你是能扛事的类型：朋友出事，第一个到的多半是你，只是安慰方式常是"这事交给我"，说完人已经在路上了。爱情里你直接、护短、行动大于言语——漂亮话不多，对方随口提过的需要，你却记得比谁都清；只是要留意控制欲和急脾气，亲密的人有时要的是并肩坐着，不是被安排。合作中你是天然的发动机，给方向、给资源，但"结果优先"的说话方式，容易让慢节奏的伙伴觉得被风推着跑。'
+  },
+  {
+    name:'李白',
+    title:'直觉漫游者',
+    quote:'天生我材必有用，千金散尽还复来。',
+    scores:[8,94,8,14,70,8],
+    core:'你人生里不少重要的决定，可能是"心里先响了"——刷到一座雪山、一段旋律、一个别人的故事，那个"想要"来得又快又清楚，理由反而是后来补的。一眼望到头的稳定你也能过，只是过着过着人就发蔫，像手机一直开着省电模式。你和李白相似的地方不在经历，在这个顺序：他二十四岁"仗剑去国，辞亲远游"，盘缠没攒够就出了蜀——先出发，路自己会长出来。这种性格不是不靠谱，只是它的价值要用另一种方式兑现。',
+    pattern:'你的优势多半是爆发力和真实。灵感来的时候，你能进入一种旁若无人的状态，产出别人憋一周也憋不出来的东西；你对"假"的东西有天然的排斥，这让你在人人戴着面具的环境里显得格外鲜活。李白写"黄河之水天上来"，是酒到兴头的喷薄，不是字斟句酌的推敲——他的才华恰恰长在规矩外。你可能也是：你不擅长按模板做事，但你能给出模板里根本不存在的答案。',
+    tension:'你的优势自带账单：感受力越强，越难忍受重复。你的收藏夹和草稿箱大概能作证——健身卡、买了三页的书、开了头的课程，兴趣来的时候轰轰烈烈，摸透了之后连打开都懒。你未必没有毅力，只是你的毅力只留给还没被你摸透的东西。停在"起点很兴奋、中途就熄火"的循环里太久，才华会被频繁切换一点点耗散掉。',
+    path:'你适合的环境有三个共同点：高度自主、容错率高、成果与个人表达直接挂钩。你不是不能吃苦，是吃不了"没意义的苦"——同一件事，别人当任务，你当作品，状态完全不同。创意写作、品牌策划、内容创作、艺术表演、独立工作室这类允许"以我为主"的领域容易让你发光；反过来，标准化流程、层层审批、按资历排队的地方，大概率会把你的灵气磨平。',
+    perceived:'外人看你才华横溢、洒脱不羁，和你相处轻松有趣，你总能把平淡的日子过出花样。但也可能觉得你不够稳、情绪化，重要的事不敢全交给你。当年李白被召入长安，贺知章一见惊呼"谪仙人"，玄宗降辇步迎——那是他人生的巅峰时刻；但几年后他便被赐金放还，离开时写下"安能摧眉折腰事权贵"。欣赏你的人极欣赏，觉得你难用的人也确实难用你。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：把自由活成逃避。不喜欢的事一换再换，承诺一再往后推，回头一看，热闹很多，留下来的东西不多。晚年的李白凭着热情投身永王幕府，几乎没做什么判断，最终因站错队被流放夜郎——他的才华救得了诗，救不了选择。对你来说，真正的自由可能不是随时可以离开，而是有能力把一件事做到底。',
+    lifestyle:'如果你生在盛唐，你大概率是长安街市里被人群围住的那个人——开口就是诗，转身就是朋友，五湖四海都去过。你要面对的挑战和李白一样：盛世把你的才华放大，也把你的散漫放大，没有人替你规划，你就一直没有规划。放到今天，你需要的是有弹性的生活：自由安排的时间、多元的兴趣、定期换一换环境。不是朝九晚五不适合你，是它给不了你起飞的那阵风。',
+    growth:'你的成长方向不是收起翅膀，而是学会落地。第一，选一到两个真正热爱的方向深耕，给天赋一个可以复利的赛道；第二，建立最低限度的日常结构，哪怕只是"每天固定一小时做最重要的事"；第三，练习"完成比完美更重要"——半途的作品证明不了你，完成了的才算数。李白一生留下近千首诗，靠的不是灵感，是灵感来时他真的动笔了。',
+    relation:'友情里你是气氛担当：饭桌上冷场三秒，多半是你先接住话头，认识你的人都说和你玩得尽兴——只是你散场也散得快，上个月还天天见的人，这个月就只剩点赞之交，朋友聚散对你来说像呼吸一样自然。爱情里你浪漫热烈，纪念日的心动瞬间从不缺席，怕的是日历翻到普通的一周——承诺和日复一日的陪伴，是你需要刻意练习的功课。合作中你点子最多、开局最惊艳，适合做发起人和创意源；只是收尾阶段多半要交给结构感更强的伙伴，认清这点，合作关系反而更长久。'
+  },
+  {
+    name:'苏轼',
+    title:'逆境整合者',
+    quote:'竹杖芒鞋轻胜马，谁怕？一蓑烟雨任平生。',
+    scores:[8,33,8,38,8,58],
+    core:'你最核心的驱动力，多半是无论发生什么，都能重新找到意义。生活的难处到你这里，像一场落在江面的雨——当时也急，也冷，可你总会拿出纸笔，把它写下来、做出来，变成能消化甚至能请人尝一口的东西。你和苏轼相似的地方，不是经历相同，而是面对挫折的反应：先接住，再转化。他因乌台诗案被贬黄州，人生跌到谷底，却在那里写出《赤壁赋》，还研究出了东坡肉。你多半也是这样：生活给你一记重锤，你可能会难过，但你不会一直躺在地上。',
+    pattern:'你的优势多半是韧性和转化力。同样一次失败，别人内耗三个月，你可能两周就把它变成了段子、文章或者一次深度聊天。你不假装痛苦不存在，但你天然会去找那个"这件事教会了我什么"的角度。苏轼一生被贬三次，从黄州到惠州再到儋州，越贬越远，他却在惠州写"日啖荔枝三百颗"，在海南办学堂——处境往下走，人却往上活。你身上也有这种把烂牌打出幽默感的能力。',
+    tension:'你的优势自带账单：转化力越强，越容易跳过"承认难过"这一步。豁达有时像一层薄薄的保护色，情绪还没来得及被看见，就已被你加工成得体的输出。朋友眼里你好像永远没问题，久而久之，连你自己都快信了——直到某个深夜，一句话没由来地把你击中。允许自己不开心，不代表你的豁达是假的；恰恰相反，先承认疼，转化才是真的。',
+    path:'你适合的环境有三个共同点：有人与人真实的连接、有表达和创作的出口、变化足够多。你不是怕苦，是怕苦得毫无意义——同样一份难，如果它能变成作品或者帮到别人，你就扛得住。教育、心理咨询、内容创作、公共传播、文化创意这类需要情绪承载力和表达力的领域容易让你扎根；反过来，纯技术导向、人际稀薄、成果无法分享的环境，可能会让你的能量慢慢枯掉。',
+    perceived:'外人看你豁达幽默、处变不惊，仿佛什么打击到你这儿都能消化，是朋友圈里稳定的开心果。但有时大家也会疑惑：你是真的没事，还是习惯了说没事。当年苏轼被贬黄州，人前照样谈笑诗文，给友人的信里却写过"惊起却回头，有恨无人省"——人前的通透和人后的孤独，你可能都熟。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：用乐观当止痛药。什么事都自己消化，什么难都自己扛着体面，把"没事"挂在嘴边，难过的时刻只在无人处才敢流露。苏轼晚年被贬海南，物资匮乏到"食无肉、病无药"，他依然写诗自嘲——这份豁达成就了他的伟大，但也让他把太多苦都咽了下去。你不必等到撑不住才求助，说出来不丢人。',
+    lifestyle:'如果你生在北宋，你大概率是那个贬到哪儿就把哪儿过成诗的人——黄州种地、惠州吃荔枝、儋州办学，别人眼中的流放地，在你手里都成了第二故乡。你要面对的挑战和苏轼一样：环境不断被抽走，你就不断重建，很少停下来问自己累不累。放到今天，你需要的生活是：有创作空间、有可以说真话的朋友、允许情绪流动的日子。写作和表达不是爱好，是你的解压阀。',
+    growth:'你的成长方向不是更豁达，而是给情绪留一个不被转化的位置。第一，允许自己有不产出快乐的日子，难过就难过，不用急着把它变成段子；第二，找到一两个真正安全的倾诉对象，练习说"我最近不太好"；第三，把情绪当信息而不是敌人——它反复出现，说明有真实的需要没被满足。苏轼的豁达之所以动人，不是因为他没有痛苦，而是他连痛苦都写得诚实。',
+    relation:'友情里你是暖心担当：饭桌上话掉在地上，多半是你弯腰把它捡起来，笑着递回给人；谁心情不好，也总爱找你聊。爱情里你包容、有趣，能把柴米油盐过出滋味；只是家人有时盼你别那么"懂事"——你太会体谅别人，自己的需求却很少出口。合作中你是润滑剂，能让紧绷的场面松弛下来；只是别默认自己永远是扛情绪的那一个，你也有资格被照顾。'
+  },
+  {
+    name:'武则天',
+    title:'系统掌控者',
+    quote:'花须连夜发，莫待晓风吹。',
+    scores:[88,8,52,8,28,31],
+    core:'你最核心的驱动力，多半是把事情纳入自己能掌控的秩序。别人眼里的"控制欲"，在你这里更像一种手痒：明明看得出机器哪里在漏、齿轮哪里在错位，就很难假装看不见、袖手走开。做选择时，你最看重的是"这个决定能不能让整体更高效地运转"。你和武则天相似的地方，不是经历相同，而是面对失控局面的反应：不慌、不躲，直接动手接管。她从才人到女皇，每一步都在别人不看好的位置上重建规则。这一点你或许不陌生：环境越乱，你反而越冷静，因为那是你发挥的时刻。',
+    pattern:'你的优势多半是系统思维和决断力。你善于看清一个组织里真正起作用的链条——谁在干活、谁在空转、哪一步在漏血，然后你敢动手改。武则天重开科举、首创殿试和武举，把选官权从门阀手里一点点收回来——她改的不是一个人，是一套让平庸者安坐高位的结构。你可能也是这样：你不满足于救火，你想修的是消防系统。',
+    tension:'你的优势自带账单：统筹能力越强，越容易把一切都纳入管理。效率是你看世界的第一语言，可关系不是系统，家人不是下属——爱人想说说今天的委屈，话才三句，你已经给出方案，对方往往更委屈了。你不是没有感情，是默认"解决问题=在乎这个人"。这个等式在职场大多成立，在亲密关系里，多半不成立。',
+    path:'你适合的环境有三个共同点：权责清晰、有真正的难题可解、你的判断能直接落地。你不是爱权力本身，是需要足够的位置让方案跑通——授权不充分的环境对你和对你所在的团队都是浪费。组织管理、制度设计、企业变革、大型平台运营这类需要强力统筹的领域容易让你发光；反过来，处处掣肘、议而不决、人情大于规则的地方，大概率会让你窒息。',
+    perceived:'外人看你精明强干、气场全开，是那种关键时刻能把场面镇住的人。但也可能觉得你冷峻、有距离感，跟你相处总有点公事公办的味道。武则天当年面对骆宾王替徐敬业写的讨武檄文，读到"狐媚偏能惑主"，非但不怒，反而责备宰相：这样的人才没被朝廷用起来，是宰相的失职。对手骂她，她看到的是人才流失——这种反应方式，你大概率不陌生。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：用效率衡量一切，包括人。当所有人都在你的系统里变成"功能"，你赢得的是秩序，失去的是温度。武则天晚年最倚重的狄仁杰，是她亲自提拔的反对者——他敢当面驳她，她反而越发信任。这段关系恰恰说明：一个掌局者最稀缺的，不是听话的人，是敢说真话的人。位置越高，你身边的真话往往越少，这比任何对手都危险。',
+    lifestyle:'如果你生在大唐，你大概率不会安于安排好的位置——别人在争眼前的得失，你在研究这套体系怎么运转、漏洞在哪里。你要面对的挑战和武则天一样：走到哪一步都有人不满，你越强，非议越多，最后你学会的只是不在乎。放到今天，你需要的生活是：有清晰的目标和层级、有能让你全权统筹的一摊事、留得出彻底放空的休息时间。掌控是你白天的工作，不是你全部的人生。',
+    growth:'你的成长方向不是收起锋芒，而是给系统留出人性的接口。第一，在亲密关系里刻意收起KPI思维，练习只倾听、不解决；第二，定期问身边的人"你最近怎么样"，并且等对方把话说完；第三，培养一个完全不讲效率的爱好，种花、养鱼、慢走都行。武则天退位前留下遗诏，去帝号，与高宗合葬——一辈子争到底的人，最后学会了放手。你不必等到最后才开始。',
+    relation:'友情里你是可靠的主心骨：朋友的大事都愿意听你的判断，只是敢跟你撒娇的人不多——不是不亲，是你的稳当让人觉得万事有人扛。爱情里你习惯主导和安排，能给对方实实在在的安全感；只是爱不是命令，对方有时要的是商量，不是通知。合作中你多半是那个操盘手，方向、节奏、分工都抓得住；给旁人留一点发挥的余地，团队会比你想象中更有韧性。'
+  },
+  {
+    name:'孔子',
+    title:'价值传递者',
+    quote:'己所不欲，勿施于人。',
+    scores:[24,8,8,95,8,8],
+    core:'你最核心的驱动力，多半是让关系和群体变得更好。你天然相信：人聚在一处，可以比各自散落时活得更体面。做选择时，你先过的那一关往往是"这样对别人公不公平"，其次才轮到"对我有没有利"。你和孔子相似的地方，不是经历相同，而是面对世界的态度：明知理想难以完全实现，仍然选择认真参与。他周游列国十四年，处处碰壁，被形容为"知其不可而为之"。你多半也是这样：别人怎么活是别人的事，你心里那把尺，不太会因为"大家都这样"就改刻度。',
+    pattern:'你的优势多半是影响力和责任感。你不一定站在最显眼的位置，但一个群体的氛围、默契和底线，往往由你这样的角色在维持。别人起冲突时，你会去当那个讲理又讲情的人；团队散了，你会是留下来收尾的那个。孔子弟子三千，贤者七十二，他从不高高在上地训人，而是因材施教——同一个问题，给子路和冉有的答案完全相反。这一点你或许不陌生：你影响人的方式不是压，是带。',
+    tension:'你的优势自带账单：标准越高，越容易对现实失望。你按"应该"要求自己，也会不自觉地用同一把尺去量别人——看见敷衍，你心里先疼一下，替那件事，也替那个本可以认真的人。可人本来就是复杂的，不是所有人都按理想行事。这份失望积累久了，会变成一种说不出口的疲惫：为什么认真的人总是少数？答案可能是：认真本来就是稀缺品，包括你自己。',
+    path:'你适合的环境有三个共同点：做的事情对人有真实影响、组织本身有价值底线、成果需要时间沉淀。你不是不能赚钱，是对"赚没有意义的钱"提不起劲。教育、培训、人力资源、社会工作、文化传承这类靠长期信任积累的领域容易让你扎根；反过来，纯逐利、话术大于实质、人来人往没有沉淀的地方，大概率会让你怀疑自己在干嘛。',
+    perceived:'外人看你温和有礼、有原则，是值得信赖的长辈型、师长型人物，遇到大事愿意听你的意见。但也可能觉得你有点说教、不够灵活——你讲道理的时候，对方有时只是想被理解。当年孔子在郑国与弟子走散，独自站在城门口，被人形容"累累若丧家之狗"，他听了反而笑着承认：确实像。最讲究体面的人，对自己的落魄反而最坦然。你在别人眼里的可靠，可能也带着一点类似的辛苦。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：把"应该"变成尺子，去量所有靠近你的人。对不符合标准的人和事，你可能生出一种隐性的失望甚至傲慢——嘴上说包容，心里已经扣分。孔子晚年最喜爱的学生颜回早逝，他悲恸大哭，但依然继续编书授徒。执着于理想的人，要学会的不是放弃标准，而是允许世界按它自己的速度变好。',
+    lifestyle:'如果你生在春秋，你大概率是那个带着学生赶路的人——一辆牛车，几个随从，从一个国家到另一个国家，讲你相信的道理，哪怕没人采纳。你要面对的挑战和孔子一样：坚持的方向是对的，回响却可能要等很多年后才来。放到今天，你需要的生活是：有规律、有仪式感、做的事情能看见对人的影响。教学、分享、带人成长，这些会让你由衷地充实。',
+    growth:'你的成长方向不是降低标准，而是把标准和人分开。第一，区分"原则"和"偏好"——原则用来要求自己，偏好不必强加于人；第二，练习接纳"不完美的参与"，世界不会一步到位，你能做的是推它一把；第三，给自己留一点"不教育任何人"的时间，纯粹地休息。孔子说"用之则行，舍之则藏"——被需要时全力以赴，不被需要时安顿好自己，这是值得你练一生的功课。',
+    relation:'友情里你是精神支柱型：朋友在价值观上有了困惑，第一站往往走到你这里，你也真心愿意陪他慢慢想清楚。爱情里你重责任和道义，认定了就踏实过日子；只是别让"为你好"替你说话——对方要的多半是理解，不是修正。合作中你是团队的良心，能稳住下限；只是别把所有纠正的活都揽在自己身上，有些课，别人需要自己上。'
+  },
+  {
+    name:'孙武',
+    title:'信息决策者',
+    quote:'知彼知己，百战不殆。',
+    scores:[12,8,94,8,8,65],
+    core:'你最核心的驱动力，多半是看清。在你看来，大多数失误不是能力不济，而是信息不够、判断太急。所以你愿意花时间收集、比对、验证，像夜里擦亮一盏灯，只为出手前把局面照透。你和孙武相似的地方，不是经历相同，而是面对不确定时的第一反应：先降低信息差，再谈行动。他留给世界的不是战绩，是一套方法——《孙子兵法》第一篇讲的就是"计"，先算后战。你可能也是这样：你信的不是运气，是算过之后的把握。',
+    pattern:'你的优势多半是判断质量。你会本能地列出变量、评估概率、准备预案，情绪和气氛很难把你带走。别人争论"该不该做"，你已经在问"在什么条件下做、做到什么程度止损"。孙武见吴王阖闾时，先以宫女演练军阵、确立纪律——纪律不立，兵法就是空谈；他先证明"系统可控"，才谈"战而胜之"。你多半也是这样：你出手少，但你出手的那些决定，往往经得起回头检验。',
+    tension:'你的优势自带账单：算得越清，越难接受"算不清"的事。感情、缘分、他人的心情，这些变量太多、反馈太慢的领域，会让你本能地想绕道走。你可能也察觉过，自己把日子过成了项目管理——连一场休息，都要先问值不值。可有些事没有最优解，只有愿意一起承担的人；有些答案，只有走近了才看得见。',
+    path:'你适合的环境有三个共同点：决策质量决定成败、信息密度高、容许深度研究。你不是怕担责，是怕在没有依据的状态下担责——给你足够的分析空间，你敢下重注。数据分析、金融风控、战略咨询、法律、技术架构这类依赖信息质量的领域容易让你站稳；反过来，拼嗓门、拼关系、结论先于证据的地方，大概率会让你水土不服。',
+    perceived:'外人看你冷静理智、善于分析，是危机里的定海神针，天塌下来你也在查数据。但也可能觉得你冷冰冰、不够有人情味——你讲事实的时候，对方有时候在等一句安慰。孙武助吴破楚之后功成身退，史书上他此后再无记载——他把人生的进退也算得干干净净。你在别人眼里，可能也是那个永远清醒、却让人看不透的人。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：只相信能被量化的东西。数据之外的可能性——直觉、情谊、冲动带来的意外收获——都被你当作噪音过滤掉，人生因此稳妥，也因此变窄。《孙子兵法》通篇讲计算，却也有"兵无常势，水无常形"一句：真正的高手，算的不是固定答案，而是变化的应对。留一点算不到的空间，那里面往往藏着你最需要的东西。',
+    lifestyle:'如果你生在春秋，你大概率是那个先写兵书、再上战场的人——别人在练刀，你在画地形、算粮草。你要面对的挑战和孙武一样：算无遗策的人，容易觉得世界只需要计算，直到遇到一个你怎么算都算不明白的人。放到今天，你需要的生活是：有独处时间、有资料可研究、有明确问题可解决，外加一两个愿意把你从书桌前拉出去的朋友。',
+    growth:'你的成长方向不是少算，而是把人算进方程。第一，做重大决定时，去问你信任的人的感受，不只是他们的意见；第二，练习承认"我不知道"，未知不丢人，装懂才危险；第三，每月做一件完全没有性价比的事，纯粹因为喜欢。孙武写"知彼知己"，彼己之外还有天时地利——留白，也是策略的一部分。',
+    relation:'友情里你是靠谱的顾问型：朋友的大决定愿意找你把关，你给的判断也确实准——只是散场后各自回家，你常是先走的那一个，热闹于你是耗电的。爱情里你稳定、少波澜，日子被你安排得井井有条；只是伴侣倾诉烦恼时，你给的可能是复盘，对方要的只是陪伴。合作中你是天然的风控官，能把团队的冲动拉回轨道；只是偶尔要允许一点"明知不划算但值得"的浪漫，那不是浪费，是人心。'
+  },
+  {
+    name:'秦始皇',
+    title:'宏大执行者',
+    quote:'朕为始皇帝，后世以计数，二世三世至于万世。',
+    scores:[88,8,15,8,55,29],
+    core:'你最核心的驱动力，多半是把脑海里的图景变成现实。你看得见十年后的格局，也熬得住抵达之前的漫长——大目标在你手里，会先折成一节一节可执行的工程，像长城不是一天砌成的，但它每天都在长。做选择时，你看的往往不是眼前一步的得失，而是它在整幅版图里的位置。你和秦始皇相似的地方，不是经历相同，而是处理目标的方式：站在终点倒推现在。他九年间扫平六国，之后统一文字、货币、车轨，每一件都是几十年尺度的工程。这一点你或许不陌生：别人看到的是眼前的琐事，你看到的是拼图。',
+    pattern:'你的优势多半是格局和执行力。认准方向后，你的推进是结构性的：先立框架，再填模块，进度一步步可见。同时你能承受短期的不适——孤独、误解、反复，你默认这些是大工程的成本。统一之后，他修驰道、定郡县，把一个刚刚打下来的天下改造成一套可以运转的体系——打天下靠武力，治天下靠的是把愿景翻译成制度的能力。你可能也是这样：你不只是想赢一次，你想建一个能持续赢的结构。',
+    tension:'你的优势自带账单：目标越大，人越容易被你排在后面——包括你自己。睡眠、情绪、健康，都可以为进度让路；你未必觉得辛苦，因为感受早被你调成了静音。只是等工程告一段落，夜深人静，那些被搁置的关系和身体，会一起回来敲门。记住，人是系统里最不能被牺牲的变量，你自己也是人。',
+    path:'你适合的环境有三个共同点：目标足够宏大、周期足够长、你的决定能调动真实资源。小事激活不了你，你天然为"从无到有"的局而活。基础设施建设、大型平台创业、政策制定、产业整合这类需要长期布局和强力执行的领域容易让你发光；反过来，琐碎、重复、看不见累积的地方，大概率会让你觉得生命在被浪费。',
+    perceived:'外人看你志向远大、执行力惊人，是那种说要做就真能做成的人，跟着你干事的人心里有底。但也可能觉得你专断、不近人情——你的世界里目标太清晰，闲聊和寒暄几乎不存在。当年秦始皇批阅奏章"以衡石量书"，每天不批完定量竹简不休息——后人记下这一笔时，都带着复杂的感慨。欣赏你的人敬你，怕你的人也真的怕你。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：把一切都工具化，包括自己。为了抵达终点，人、感受、过程都被折叠成成本项。秦并天下之后，工程一个接一个，长城、驰道、宫室，民力被用到极限，帝国在他身后短短几年就散了——不是愿景错了，是承载愿景的人被透支了。伟大的事业需要长跑，长跑靠的不是狠劲，是可持续。',
+    lifestyle:'如果你生在战国末年，你大概率是那个盯着地图划分郡县的人——别人庆祝胜利，你已经在设计下一套制度。你要面对的挑战和他一样：版图越大，能商量的人越少，所有的判断最后都压在你一个人身上。放到今天，你需要的生活是：有值得投入十年的事业版图、能看到进度条的正反馈、以及敢于把你从工作里拽出来的人。扩张是本能，休息需要被安排。',
+    growth:'你的成长方向不是收敛野心，而是给宏大配上节奏。第一，推重大项目时停下来问一句"谁在为此承受代价"，答案会让你做出更可持续的决定；第二，把休息写进日程，像对待会议一样对待睡眠；第三，培养一两个能泼你冷水的人，并且认真听完。始皇一生没有早立储君、没有留好退路，身后局面立刻失控——留有余地的安排，不是软弱，是对无常的敬畏。',
+    relation:'友情里你朋友不多但分量重，能跟上你脚步的人，才留得下来——留在你身边的，多是见过你真心的人。爱情里你可能显得遥远：心里装着对方，日程表里却常常找不到对方；可一旦认定，你会用行动和资源为这个人兜底——只是对方要的，有时不过是你安安静静地在场。合作中你是天然的发动机和总指挥，越是没人敢接的烂摊子你越兴奋；要留意的是，别让"效率"成为身边人不敢说真话的理由。'
+  },
+  {
+    name:'王阳明',
+    title:'知行统一者',
+    quote:'知行合一。',
+    scores:[82,8,65,8,22,29],
+    core:'你最核心的驱动力，多半是把想明白的活出来。道理听了一箩筐，你偏要在自己身上验证过才算数——纸上得来的，总要亲自走一遍。做选择时，你过的问题往往是"这个道理，我自己做得到吗"。你和王阳明相似的地方，不是经历相同，而是对"言行一致"的执念。他讲"知行合一"，不是道德口号，而是一个发现：真知自然会带来行动，迟迟不行动，说明还没真懂。你多半也是这样：你允许自己慢，但不允许自己糊弄。',
+    pattern:'你的优势多半是自我迭代能力。你会在实践中反思，在反思后调整，再带着新的认知回到实践——这个循环一旦转起来，你几乎不重复踩同一个坑。王阳明被贬龙场，驿站破败、随从病倒，他在困境中日夜自问：圣人处此，更有何道？龙场一悟，"心即理"从此立起——最落魄的处境，被他变成了思想的转折点。这一点你或许不陌生：生活给你的每次挫折，都可能被你复盘成升级材料。',
+    tension:'你的优势自带账单：标准内化得越深，自我审判越严。你容易把"知行合一"过成一根鞭子——道理懂了却没做到，夜深人静，你就成了自己的法庭，被告和法官都是你。可人不是程序，知和行之间本来就隔着情绪、惯性和运气。把知行合一当方向，你会走得远；把它当每天的验收标准，你会活得非常累。',
+    path:'你适合的环境有三个共同点：有真实的问题可解、允许试错和复盘、做的事情与个人成长直接相关。你不是不能做执行，是执行必须有认知增量——纯粹重复的活，你做三天就开始琢磨"这背后的规律是什么"。领导力发展、组织变革、教育创新、创业这类理论与实践深度咬合的领域容易让你扎根；反过来，论资排辈、按部就班的地方，大概率会让你觉得钝。',
+    perceived:'外人看你自律、有悟性、说到做到，是那种"活明白了"的人，遇到困惑愿意听你聊两句。但也可能觉得你对自己太狠——你的标准对内不对外，别人早原谅你了，你还在自我检讨。当年王阳明平定宁王之乱，功劳被抢、遭人构陷，他一句"此心光明"继续讲学——外人看到的是境界，只有你自己知道那背后是多少次自我搏斗。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：用道理管理自己，把内心当成需要整顿的对象。情绪、欲望、疲惫，凡是不符合"应该"的，都被你视作待修正项。王阳明临终遗言"此心光明，亦复何言"——一生的功课最后落在心上，不在事上。对你来说，最深的知行合一，可能是允许自己有做不到的时刻，并且不再审判它。',
+    lifestyle:'如果你生在明代，你大概率是那个白天带兵、晚上讲学的人——王阳明是文官出身，却能在阵前立功，靠的正是把学问练成了本事。你要面对的挑战和他一样：想得太明白的人，容易对糊涂的世界失望，也容易对自己失望。放到今天，你需要的生活是：有挑战性的事务、有独处静思的时间、有能彼此照见的朋友。事上练，是你的修行方式。',
+    growth:'你的成长方向不是更彻底的知行合一，而是对自己温柔一点。第一，把"我必须做到"改成"我今天做了一点"，进步以年为单位算；第二，允许自己有知行分离的时刻——懂得道理却做不到，是人之常情，不是罪；第三，定期把审视的目光从自己身上移开，去看看天、帮帮别人。王阳明说"人须在事上磨"——磨的是心性，不是消耗自己。',
+    relation:'友情里你是那个能点醒别人的人：朋友在迷雾里打转，来找你坐一坐，走时多半带着一盏灯。爱情里你真诚、要求高，盼着两个人一起变好；只是对方有时要的不是精进，是被接纳——"你已经很好了"这句话，请练习说出口。合作中你是成长型伙伴，复盘能力一流；注意别把合作关系也变成互相校正，留一点允许犯傻的空间。'
+  },
+  {
+    name:'曾国藩',
+    title:'长期主义者',
+    quote:'结硬寨，打呆仗。',
+    scores:[22,8,52,8,8,89],
+    core:'你最核心的驱动力，多半是持续积累。别人问你怎么做到的，你多半答不上来——因为没有什么"怎么"，就是每天做一点：文件当天清、课当晚补、错的地方标出来下次绕开。你不信捷径，也不太信灵光一闪，选路时专挑那条看起来慢、但确定在往上垒的。你和曾国藩相似的地方，不是经历相同，而是对"笨功夫"的信任：他天资平平，考秀才考了七次，同辈里聪明人不少，最后成事的却是最慢的他。你的底气不来自天赋，来自"我一直在"。',
+    pattern:'你的优势多半是稳定性和复利。别人三分钟热度的事，你能做三年；别人在情绪里起伏，你的节奏很少被打乱。这种特质在顺风局里不显眼，在逆风局里是定海神针。曾国藩带湘军，总结的打法就六个字："结硬寨，打呆仗"——不逞奇谋，每到一处先挖壕沟、筑高墙，用最笨的方式把胜率一点点垒高。你多半也是这样：你不追求惊艳，你追求不可撼动。',
+    tension:'你的优势自带账单：越自律，越难允许自己松懈。周末瘫了一下午，晚上心里会冒出一句"今天废了"；追剧追到一半，你会先把明天的待办列完才敢继续——快乐如果毫无产出，你享受起来多半带点罪恶感。可弦一直绷着，断的往往是人，不是事。曾国藩一生多病，几度想告病还乡——再硬的长期主义者，身体也有自己的账本。休息不是奖励，是维护成本，该花就得花。',
+    path:'你适合的环境有三个共同点：回报以年计、努力与结果强相关、容得下慢功夫。你不怕难，怕的是"努力被稀释"——论关系、拼运气的地方会让你无处使力。公共管理、制度建设、学术研究、专业深耕、长期经营这类比拼耐心和积累的领域容易让你胜出；反过来，追风口、赶热点、今天投入明天要回报的地方，大概率不是你的主场。',
+    perceived:'外人看你踏实可靠、自律坚韧，是那种"稳得让人安心"的人，大事托付给你不会睡不着觉。但也可能觉得你沉闷、不懂变通，跟你在一起少了点火花。当年曾国藩在官场屡遭排挤，同僚讥他迂腐，他给自己定的日课却雷打不动：读书、写字、写日记，直到离世前一天。你给别人的印象可能也是这样：不刺激，但值得信。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：把克制变成压抑。想要的不敢要，喜欢的不敢碰，久而久之连自己的欲望都摸不准了。曾国藩年轻时写日记痛骂自己浮躁傲慢，连多看别人下棋一会儿都要自责——他用圣人的尺子量了自己一辈子。你现在用的那把尺子，会不会也短了点？允许自己有欲望、有享受，长期才有燃料。',
+    lifestyle:'如果你生在晚清，你大概率是那个每天写日记、临帖、按日程表生活的人——军营再乱，他的日课不断。你要面对的挑战和他一样：板凳一坐十年冷，中途诱惑和质疑都不会少，你得靠自己的节奏感活下去。放到今天，你需要的生活是：有长期目标、有每日可见的进度、有一套自己的仪式感。规律不是苦行，是你的能量来源。',
+    growth:'你的成长方向不是更自律，而是给自律装个减压阀。第一，每周安排一段"无目的的快乐时间"，不看收获、不谈成长；第二，允许计划偶尔被打破——被打乱的一天不等于失败的一天；第三，承认欲望不是敌人，想赚钱、想被夸、想玩，都是正常的。曾国藩说"打脱牙和血吞"——那是他面对逆境的态度，不是他对待自己的方式，别用混了。',
+    relation:'友情里你是细水长流型：半年没联系，对方一句"在吗"，你已经把事情办完发截图过去了——你不会说漂亮话，但朋友的急事你会默默办妥。爱情里你忠诚、稳定，把承诺看得极重：记日子、记体检、记对方随口提过的东西；但"过日子"不等于只谈责任，偶尔没来由的一束花和一句直白的"有你真好"，是对方需要的养分。合作中你是团队的地基，别人争一时长短，你积累长期胜率；只是别用自己的节奏要求所有人，有的伙伴是骑兵，天生就该快。'
+  },
+  {
+    name:'岳飞',
+    title:'使命驱动者',
+    quote:'三十功名尘与土，八千里路云和月。',
+    scores:[80,8,10,40,32,24],
+    core:'你最核心的驱动力，多半是意义。你需要一件真正值得投入的事——没有使命感的工作，于你只是消耗，钱再多也点不着心里的火。做选择时，你问的往往是"这件事值得吗"，而不是"这件事容易吗"：同一件事，别人当差事，你当信仰，状态完全两样。你和岳飞相似的地方，不是经历相同，而是行动力的来源：他的动力从来不是利益，而是"这件事必须有人做"。从军十余载，他冲在最前面的理由一直很简单：山河未复。这一点你或许不陌生：给你一个信服的理由，你能爆发出旁人看不懂的能量。',
+    pattern:'你的优势多半是纯粹和爆发力。认定方向后，你的投入是全身心的——不权衡、不保留，这种纯粹本身就是感染力，别人会不自觉地被你带动。岳家军能打，靠的从来不只是战术，而是"冻死不拆屋，饿死不掳掠"的军纪——一支把信念看得比战利品重的队伍，自然打得出别人打不出的仗。你可能也是这样：你带的节奏，别人愿意跟，因为你多半是来真的。',
+    tension:'你的优势自带账单：越是纯粹，越容易在复杂环境里受伤。你默认别人也按"值不值得"行事，可现实里多的是按"划不划算"掂量的人——你的真心，落在有些人的秤上，只是一枚可以取用的筹码。学会分辨"值得托付"和"正在消耗你"，是你绕不开的必修课。这不要求你变世故，只要求你多问一句：对方配得上我的付出吗？',
+    path:'你适合的环境有三个共同点：做的事情有超越钱的意义、组织有真实的底线、努力与结果直接挂钩。你不是不能吃苦，是吃不了"假苦"——为虚伪的目标拼命，比躺下更消耗你。公共安全、社会公益、体育竞技、有真实社会价值的事业这类需要信念感的领域容易让你燃烧；反过来，一切都可商量、一切只看钱的地方，大概率会让你心灰。',
+    perceived:'外人看你正直勇敢、有担当，是那种关键时刻靠得住、值得托付的人。但也可能觉得你过于刚直、不懂转圜——原则问题上你寸步不让，哪怕让一寸能换来十里。当年岳飞北伐连连得胜，却被朝廷急令召回，部下劝他暂缓，他只回了八个字："君命如山，不得不收。"明知不甘，仍然选择担当——这份重量，欣赏你的人未必扛得动，但你扛得住。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：把使命置于一切之上，包括自己。休息是懈怠，享受是愧疚，你把自己活成了目标的工具。可使命是长跑，烧完自己，火就灭了。同时，纯粹的信念容易长出非黑即白的世界观——不顺我者皆为阻力。岳飞的悲剧里有时代的复杂，不是一句忠奸能概括的；你要守护信念，更要守护判断力。',
+    lifestyle:'如果你生在南宋，你大概率是那个别人后退你向前的人——不是不怕，是觉得该有人站出来。你要面对的挑战和他一样：最锋利的刀，最容易被拿去砍最难的仗，也可能最先被收进鞘里。放到今天，你需要的生活是：有明确信念的事业、有并肩的战友、有看得见的战果。你要的可能不是安逸，而是值得。',
+    growth:'你的成长方向不是收敛信念，而是给它装上防护。第一，学会识别"值得"和"被利用"的区别——真正值得的事，会滋养你而不是榨干你；第二，把照顾自己列入使命清单，身体和情绪是你完成使命的本钱；第三，接受世界不是非黑即白，暂时的妥协有时是为了长久的抵达。守护信念最好的方式，是活得足够久、走得足够远。',
+    relation:'友情里你是能托付后背的人：朋友有难，你第一个到场，一句"交给我"，就是真的办了。爱情里你深情、专一、护短，在乎的人都被你划进了自己的责任范围，风雪再大也先想着替他挡着；只是对方要的有时不是被保护，是被平等地看见。合作中你是天然的旗帜，能凝聚人心、扛住压力；注意别把不认同你的人自动归为对立面——同道者未必处处相同。'
+  },
+  {
+    name:'辛弃疾',
+    title:'热血实干者',
+    quote:'想当年，金戈铁马，气吞万里如虎。',
+    scores:[57,51,8,8,95,8],
+    core:'你最核心的驱动力，多半是不甘平庸。你有激情、有才华、有行动力，最怕的不是失败，而是日子过成一潭不起波澜的水。做选择时，你倾向选那条更燃的路——赢要赢得痛快，输也要输得心服。你和辛弃疾相似的地方，不是经历相同，而是那股压不住的生命力。他二十一岁聚众起义，曾率数十骑突入数万人的金军大营，生擒叛将——这种事，谋士们不敢想，他敢做。你多半也是这样：你的字典里，"热血"不是贬义词，更像你的底层操作系统。',
+    pattern:'你的优势多半是行动力和感染力。想做的事，你今天就开始；别人还在开会讨论可行性，你的初版已经出来了。而且你的热情能点燃别人——你在场，团队的士气就是另一个档位。辛弃疾不只是词人，他真的练过兵、打过仗、赈过灾，创办飞虎军时朝廷拨款不足，他自己想办法凑齐了军费——梦想很大，他也真的伸手去够。这一点你或许不陌生：你的人生多半需要舞台，而你在台上往往不怯场。',
+    tension:'你的优势自带账单：燃得越旺，越难接受慢和停。热血没有方向时，会烧成内耗——想做的事太多，摊开一看，哪个都停在半路。你也容易对"不燃"的人失去耐心，觉得对方冷漠、拖后腿；可团队里总有人是稳压器，不是火花塞，各有各的用。辛弃疾南归后被闲置了近二十年，一腔热血没处安放，只好写进词里——"却将万字平戎策，换得东家种树书"。你最难熬的，恐怕也是这种有力没处使。',
+    path:'你适合的环境有三个共同点：有对手、有舞台、节奏快。太平日子养不住你，你需要有事可干、有仗可打、有榜可争。创业增长、市场开拓、竞技体育、演讲传播这类需要激情与执行并重的领域容易让你发光；反过来，按部就班、论资排辈、多年媳妇熬成婆的地方，大概率会把你憋出内伤。',
+    perceived:'外人看你热情豪爽、才华横溢，永远有使不完的劲，跟你共事像开了倍速。但也可能觉得你冲动、耐心不足——上头的时候，你的语速和音量都在暴露你。当年后人评辛词"大声镗鞳，小声铿鍧"，连写词都带着兵器声——你的锋芒是藏不住的，欣赏你的人爱你的真，怕你的人怕你的烈。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：激情四处冲撞，没有一处扎根。什么都试过，什么都是半吊子；才华在频繁切换中漏光，最后只剩抱怨怀才不遇。辛弃疾的词写尽了这种痛："把吴钩看了，栏杆拍遍，无人会，登临意。"对策不是熄火，是给火找个炉膛——选一个值得烧十年的方向，让你的热血有处可去。',
+    lifestyle:'如果你生在南宋，你大概率是那个闲下来也惦记着北伐的人——辛弃疾临终之际，念念不忘的仍是未竟的事业。你要面对的挑战和他一样：时代不一定给你的热血配舞台，机会没来的时候，你得学会自己搭台。放到今天，你需要的生活是：有挑战性的目标、同频的战友、看得见的胜负。平静是别人的奢侈品，不是你的。',
+    growth:'你的成长方向不是降温，而是聚焦。第一，把热情绑定到一个长期目标上，让所有心血来潮都为它服务；第二，练习延迟满足——再燃的事，也冷静三天再全力投入；第三，行动前多问一句"这是冲动还是策略"，热血用对了是燃料，用错了是炸药。辛弃疾留给后世的不是战功，是词——把没处安放的能量，转化成了能传千年的东西。你也找得到你的转化器。',
+    relation:'友情里你是义气担当：朋友的事就是你的事，聚会散场时，最响的那个笑声多半还是你的。爱情里你热烈直接，爱憎分明，从不搞暧昧——喜欢藏不住，委屈也藏不住；只是情绪上头时的脾气，需要身边人替你收着，事后的道歉再痛快，话说出去就是说出去了。合作中你是冲在最前面的先锋官，开局、破局、攻山头都靠你；只是稳扎稳打的收尾阶段，请信任慢热的伙伴。'
+  },
+  {
+    name:'李清照',
+    title:'敏感洞察者',
+    quote:'此情无计可消除，才下眉头，却上心头。',
+    scores:[8,88,8,33,32,8],
+    core:'你最核心的驱动力，多半是真实感受。饭局散了，别人聊了什么你记不太清，但某个人说"没事"时那一丝勉强，你能记一个星期——细节、情绪、气氛，你的接收器就是比常人灵敏。你和李清照相似的地方，不是经历相同，而是对"真"的坚持。她的词从来不装：开心时"沉醉不知归路"，愁起来"人比黄花瘦"，每一种情绪都写到底。你的世界里没有"差不多就行"，感受对你来说，往往就是事实。',
+    pattern:'你的优势多半是洞察力和表达力。别人一句"我没事"，你能听出三层潜台词；一段关系的微妙变化，你常常先于所有人察觉。这份敏感让你擅长共情、安慰、创作——你能把别人说不清的感受，精准地写出来。李清照写"才下眉头，却上心头"——愁绪刚离开眉间，又落进心里，这种颗粒度的自我觉察，大概就是你的出厂配置。你感受到的世界，本来就是高清的。',
+    tension:'你的优势自带账单：接收得越多，消耗越大。同一个饭局，别人散场就翻篇了，你洗漱时还在回放那句话的语气——"他刚才是不是那个意思"；别人一觉睡好的事，你能在床上内耗到两点。敏感是你的天赋，但不是所有感受都值得你全款支付。学会调低音量不是背叛真实，是让自己能听得更久。',
+    path:'你适合的环境有三个共同点：重视质感、容许个性、成果与心力直接挂钩。你不是不能抗压，是抗不了"无意义的粗糙"——用不用心，你一眼就能看出来，也只想为用心的事投入。文学创作、艺术、设计、心理咨询、内容策划这类需要感受力的领域容易让你出活；反过来，粗放、量化、只看吞吐量的地方，大概率会磨掉你的光泽。',
+    perceived:'外人看你细腻优雅、有审美品位，和你深聊如沐春风——你能记得别人随口提过的小事。但也可能觉得你多愁善感、难以捉摸，你的情绪曲线别人跟不上。当年李清照再嫁遇人不淑，顶着极大压力也要诉讼离异——在女子几乎没有选择权的时代，她对自己人生的感受，寸步不让。你在别人眼里温柔，但你心里那道线，其实比谁都硬。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：被自己的感受淹没。细微的信号被放大成灾难，一句迟回的消息能脑补出一场告别；陷在情绪里时，行动力会整体掉线。李清照晚年的词"寻寻觅觅，冷冷清清"，把孤独写到了极致——感受力到顶的人，独处时的荒凉也是顶级的。你需要的不只是感受生活，还有隔一层玻璃看感受的能力。',
+    lifestyle:'如果你生在宋代，你大概率是那个把日常过成艺术的人——李清照和丈夫赵明诚赌书泼茶，赌某句话在某书某页，赢了先喝，笑到茶洒满怀。你要面对的挑战和她一样：感受越深，失去越痛，中年后家国剧变，她把半生的敏感都写进了词里。放到今天，你需要的生活是：有美感、有独处空间、节奏可控，外加一两个能接住你情绪深谈的朋友。',
+    growth:'你的成长方向不是变钝，而是给感受分级。第一，建立情绪边界——不是所有波动都需要处理，有些就让它路过；第二，用创作把情绪外化，写下来、画出来，感受就从你身体里搬了出去；第三，培养一个可落地的日常习惯，跑步、做饭都行，让身体把你锚在现实里。你的敏感是放大器，学会控制音量，它就是天赋。',
+    relation:'友情里你是深谈型选手，能陪人聊到凌晨三点——聚会中途大家聊得热闹，你注意到的往往是那个突然安静下来的人，散场后你的一句"你还好吗"，常常是别人当晚唯一被认真对待的时刻。爱情里你深情、专一，对方自己都没意识到的低落，你多半先看出来了——仪式感和细节是你的母语；但也要留意，别让敏感发酵成猜疑——感觉不安时，先问，别先想。合作中你是品质把关者，对粗糙零容忍；注意把标准说出口，别人不是不重视，多半是没看见你看见的。'
+  },
+  {
+    name:'司马迁',
+    title:'意义记录者',
+    quote:'人固有一死，或重于泰山，或轻于鸿毛。',
+    scores:[8,53,38,8,8,65],
+    core:'你最核心的驱动力，多半是留下点什么。你相信个体的经历值得被记录、被理解——包括那些当下看起来毫无意义的低谷：别人急着翻篇的日子，你总想先把它们写下来。你和司马迁相似的地方，不是经历相同，而是面对苦难的处理方式：不浪费它。他遭受巨大打击后没有沉沦，而是选择把余生投入《史记》——"究天人之际，通古今之变，成一家之言"。你多半也是这样：你天然会在混乱里找主线，在痛苦里提意义，记录和复盘是你整理世界的方式。',
+    pattern:'你的优势多半是深度和耐心。别人看事看结果，你看事看脉络——一件事为什么会这样、说明了什么、放在更长的时间里它意味着什么，这些问题对你有天然的吸引力。司马迁写《史记》，上起黄帝下至当代，五十二万余字，写完一件事还要加一段"太史公曰"给出自己的判断——他不满足于记录，他要给出解释。这一点你或许不陌生：你的价值不在知道得多，而在看得深。',
+    tension:'你的优势自带账单：越擅长从苦难里提意义，越容易把吃苦当必经之路。有些苦确实淬炼人，但不是所有苦都值得吃——有些纯粹的坑，绕开就好，不必赋义。你可能还有个倾向：不急着表达，总觉得"再等等，等想得更成熟些"；可有些记录错过了时机，意义就散了，像退潮后的沙滩，回不去当时的纹路。想清楚是能力，及时输出也是。',
+    path:'你适合的环境有三个共同点：时间维度长、容得下深度钻研、作品比曝光重要。你不是怕寂寞，是怕热闹里的空心——喧嚣的场合待久了，你会本能地想回去写点什么。历史研究、深度报道、学术写作、法律、纪录片、非虚构创作这类需要长期深耕和叙事能力的领域容易让你立住；反过来，追热点、拼速度、信息快餐化的地方，大概率会让你觉得浅。',
+    perceived:'外人看你深沉有思想、善于总结，是朋友圈里少见的会认真听你说完的人。但也可能觉得你背负太重、不够轻松——你的话题有重量，跟你聊天像在读一本好书，就是费脑子。当年司马迁在《报任安书》里剖白自己：之所以隐忍苟活，是因为"恨私心有所不尽，鄙陋没世，而文采不表于后世"。旁人看到他的沉默，没人知道那沉默里装着一整部史书。你可能也常常低估了自己在别人心里的分量。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：把苦难浪漫化。潜意识里相信"只有经历痛苦才能产出真实"，于是主动选择艰难的路，甚至对顺利抱有怀疑。司马迁列举的先贤——文王、孔子、屈原，确实都是困而后作，但那是他们没得选，不是痛苦本身的功劳。对你来说，值得记住的是：意义可以来自深刻，也可以来自丰盛，快乐也配被认真记录。',
+    lifestyle:'如果你生在汉代，你大概率是那个在灯下整理竹简的人——别人建功立业去了，你在给时代记账。你要面对的挑战和他一样：选择记录的人，往往要忍受漫长的无人喝彩。放到今天，你需要的生活是：有长期经营的领域、有安静的深度时间、有自己的输出习惯——写日记也行，公开写作也行。你的秩序感不在日程表里，在你写下的那些字里。',
+    growth:'你的成长方向不是更深刻，而是让深刻流通。第一，降低发表门槛——想清楚三成就可以说，余下的在交流里长出来；第二，学会及时止损，不是所有事都值得写完，有些经历放下就是意义；第三，练习记录快乐，不只是记录教训——你的笔如果只对痛苦敏感，你的人生会被自己剪辑成悲剧。司马迁写完《史记》"藏之名山"，他相信时间会给出公道，你也可以。',
+    relation:'友情里你是倾听者和注脚人：朋友的故事讲完，你能帮他看见自己没看见的段落——那些他以为的平常，在你笔下有了来路。爱情里你忠诚、厚重，爱得安静而绵长；只是别把伴侣当成观察对象，被分析的感觉，会慢慢取代被爱的感觉。合作中你是深度担当，长文案、大报告、复盘总结都是你的主场；只是注意截止日期，完美的初稿不如准时的二稿。'
+  },
+  {
+    name:'玄奘',
+    title:'信念朝圣者',
+    quote:'宁可就西而死，岂归东而生。',
+    scores:[8,8,67,8,8,89],
+    core:'你最核心的驱动力，多半是追问到底。你不满足于表面答案——一个问题没想通，饭吃得慢，觉睡得浅，宁可先搁下别的事。你和玄奘相似的地方，不是经历相同，而是对"确定方向"的需要。他西行取经，出发时没有官方许可，孤身穿越八百里沙漠，立誓"宁可就西而死，岂归东而生"。你可能也是这样：孤独、误解、漫长的没有回音，你都受得住，只要方向是你认定的。这种人在任何时代都是少数，也往往走得最远。',
+    pattern:'你的优势多半是专注力和持久度。认准一件事后，你几乎不朝三暮四——别人换赛道追风口，你还在原来的路上刨土。这种定力让你能做那些"开头没人看好、做成震惊所有人"的事。玄奘西行五万里，历时十七年，带回六百余部佛经；回长安后又用近二十年专心译经——人生两大段，一段在路上，一段在灯下，全是长跑。你多半也是这样：你的人生策略不是广撒网，是一口深井。',
+    tension:'你的优势自带账单：越专注，视野越窄。目标之外的世界——身边的人、沿途的风景、可以顺路拾起的机会——容易被你自动静音。你不是不在乎人，是注意力被那个方向占满了。还有一层：信念立得太早，可能错过修正的窗口。方向坚定是美德，方向错了还坚定，就成了执念。给"我可能错了"留一道缝，不会动摇你，只会让你走得更准。',
+    path:'你适合的环境有三个共同点：目标可以被长期定义、过程容得下孤独、成果需要深度而非曝光。你不怕慢，怕的是方向频繁变动——三年一换战略的组织会让你的一切投入归零。学术研究、基础科学、翻译、长周期创作、需要长期积累的专业领域容易让你走到最后；反过来，风口切换、快速试错、什么火做什么的地方，你的耐心会变成劣势。',
+    perceived:'外人看你执着坚定、不为所动，是那种认定了九头牛拉不回的人，也是大家眼里"能成大事"的候选。但也可能觉得你固执、不通人情——你拒绝的方式很客气，但拒绝本身很硬。当年玄奘归国，唐太宗劝他还俗做官，他婉拒了，只求一处分安静译经——功名就摆在眼前，他眼睛都不眨。欣赏你的人敬你的定力，但也确实拿你没办法。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：把信念活成全部，抵达终点才发现身边没有人。玄奘是幸运的，译经的团队和身后的君主成全了他；多数信念型的人，走完长路时收获的是完成，也是孤独。对你来说，课题不是放弃信念，而是在路上留人——让重要的人参与你的旅程，而不是让他们目送你的背影。',
+    lifestyle:'如果你生在大唐，你大概率是那个出关西行、向天竺走去的旅人——没有同伴，没有补给点，只有一张路线图和一句誓言。你要面对的挑战和他一样：最难的不是路上的艰险，是无数个"要不要回去"的瞬间。放到今天，你需要的生活是：有明确方向的长项目、能长期独处的空间、不受打扰的整块时间。你不是不合群，你只是把社交的额度省给了信念。',
+    growth:'你的成长方向不是放松信念，而是让过程也有位置。第一，定期和现实世界连接——跟不同领域的人聊聊，你认定的方向需要新的坐标来校准；第二，允许信念有微调的空间，修正航线不是背叛，是负责；第三，给身边的人留出固定的时间，重要的人不该永远排在目标之后。玄奘最动人的不只是走到那烂陀，是回来后把走过的路变成了所有人的路——《大唐西域记》记下的，全是过程。',
+    relation:'友情里你是低频高质型：平日各忙各的，可朋友的请求你多半不含糊，答应了就认真办到。爱情里你专注、长情，认定的人会在心里放很久很久；只是对方有时需要确认，自己不是排在你使命之后的那一个——说出来，一句就够。合作中你是定盘星，风浪再大你不动，团队靠你锚定方向；只是别把所有岔路都当干扰，有的岔路是新的可能。'
+  },
+  {
+    name:'唐太宗',
+    title:'平衡领导者',
+    quote:'以人为镜，可以明得失。',
+    scores:[86,8,10,48,20,8],
+    core:'你最核心的驱动力，多半是成就共同事业。你相信好的掌舵人未必是最聪明的那个，而是能让一群聪明人心甘情愿同船的那个。做选择时，你会同时过两道关："这事能成吗"和"大家愿意吗"——第二道，多数人懒得看。你和唐太宗相似的地方，不是经历相同，而是对人心的重视程度。他敢重用曾建议杀掉自己的魏征，理由很简单：能听到真话，比舒服重要。这一点你或许不陌生：你要的赢，是所有人一起赢。',
+    pattern:'你的优势多半是凝聚力和判断力的平衡。你善于倾听不同意见，从中找出共同点，再做出让多数人信服的决策——这不是和稀泥，是稀缺的组织智慧。贞观年间，太宗常把观点相反的大臣凑在一起议事，魏征一生当面直谏两百余次，太宗气得回宫抱怨，转头还是采纳。你可能也是这样：你能容下不同的声音，还能源源不断地从中提炼出更好的答案。',
+    tension:'你的优势自带账单：越追求平衡，越难做那个"不讨好的决定"。什么时候都顾全，等于什么时候都没有鲜明的立场——团队等你拍板的时刻，等来的可能是又一轮讨论。而且长期照顾所有人的感受，最先被漏掉的往往是你自己：满屋子人都被你安顿妥帖，唯独自己那把椅子常常空着。你的疲惫，你不说，就没人知道。平衡是你的天赋，但天赋也需要定价。',
+    path:'你适合的环境有三个共同点：需要协调多方利益、有复杂的人际网络、成果靠团队实现。你不是不会单打独斗，是深知合力的杠杆更大。大型组织管理、公共事务、品牌与商务、平台运营这类需要凝聚多方力量的领域容易让你发光；反过来，单兵作战、零和博弈、只认个人英雄主义的地方，大概率浪费了你的天赋。',
+    perceived:'外人看你睿智包容、善于凝聚人心，是天然的主持人、组织者、团队灵魂。但也可能觉得你太会权衡，缺少一点鲜明的锋芒——你的观点常常是"都有道理"，时间久了，别人反而好奇你到底怎么想。当年太宗重修《氏族志》，把皇族列为第一、旧士族降级——这步棋既立了新规矩，又没有掀翻桌子。你被人称道的手腕，有时也是你的面具。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：过度追求共识，错失决断时机。什么都想兼顾的方案，往往什么都顾不全；人人都不得罪的立场，关键时刻等于没有立场。太宗晚年亲征高句丽未能如愿，之后写《帝范》告诫太子，坦承自己"不善多矣"——再平衡的人，也有失衡的时候。对你来说，最难的不是听，是听完之后说：就按我说的办。',
+    lifestyle:'如果你生在大唐，你大概率是那个把对手变成同事的人——凌烟阁二十四功臣里，近半数来自曾经的敌对阵营。你要面对的挑战和他一样：维系平衡耗费心神，你的电量总比看起来低。放到今天，你需要的生活是：有可以经营的"局面"、志同道合的核心圈、以及一段谁也找不到你的独处时间。热闹是你的工作，安静是你的充电。',
+    growth:'你的成长方向不是更周全，而是敢于不周全。第一，关键时刻练习鲜明表态，哪怕得罪一部分人——立场清晰的人，反而更容易被信任；第二，接受不可能让所有人满意，把"都满意"从目标里删掉；第三，定期表达自己的真实偏好，哪怕只是选餐厅。魏征的价值不在会说话，在太宗愿意听——你的平衡感，值得配上一根锚。',
+    relation:'友情里你是圈子的中心：聚会多半是你攒的，谁和谁生了嫌隙，也总有人提议"找他说和说和"。爱情里你体贴、周全，连对方的家人朋友都被你照顾得妥帖；只是亲密关系里，对方要的不是公平，是偏爱——被你在所有人面前，明确地选一次。合作中你是天然的领袖，能让形形色色的人各安其位；只是记得留一句真话给自己的直觉，它很少错。'
+  },
+  {
+    name:'杜甫',
+    title:'人间观察者',
+    quote:'安得广厦千万间，大庇天下寒士俱欢颜。',
+    scores:[16,8,8,94,8,15],
+    core:'你最核心的驱动力，多半是他人的命运。你不只关心自己过得好不好——地铁上陌生人忍住的倦意、新闻里远方的处境，都会在你心里留下一道浅浅的划痕，过后还隐隐作痛。你和杜甫相似的地方，不是经历相同，而是那种"把别人的苦当回事"的本能。他自己住着漏雨的茅屋，写下的却是"安得广厦千万间，大庇天下寒士俱欢颜"。你多半也是这样：你的世界从来不止你一个人，你的在乎，是会疼的那种。',
+    pattern:'你的优势多半是共情力和责任感。别人刷过就忘的消息，你能记很久；朋友低谷时的沉默，你读得出分量。这份敏感不是软弱——它会变成实实在在的行动：你多半是那种会为不相识的人奔走、为不公平的事较真的人。杜甫困守长安十年，自己穷到"朝扣富儿门，暮随肥马尘"，心里装着的却是"穷年忧黎元，叹息肠内热"——自己都快过不下去了，还在为天下人焦心。你可能也是：你的表达和行动，常常从别人的痛点出发。',
+    tension:'你的优势自带账单：共情越深，背负越重。别人的难处你忍不住扛，世界的问题你忍不住想，可你不是救世主——把所有重量都压在自己肩上，先弯的多半是你。而且长期替所有人操心，你的疲惫会被"懂事"包好收起，旁人只看见你在笑，没人发现你也快没电了。先把自己照顾好，不是自私，是让你的善良可持续。',
+    path:'你适合的环境有三个共同点：工作有真实的社会价值、能接触具体的人、成果看得见摸得着。你不是不能赚钱，是受不了"赚钱但空洞"——让你推一个自己不信的东西，比加班更消耗你。社会服务、教育、新闻、公益、医疗、有真实用户价值的创业这类人文关怀领域容易让你找到位置；反过来，纯流量逻辑、数据好看但无人在意的地方，大概率会掏空你。',
+    perceived:'外人看你有同情心、有责任感，总是先想到别人，是朋友圈里最让人放心的存在。但也可能觉得你忧思过重、不够轻松——跟你聊天，话题总是不知不觉滑向沉重的地方。当年杜甫写"感时花溅泪，恨别鸟惊心"，安史之乱的痛，他比同时代所有诗人都扛得久、写得深。别人敬你的善良，也心疼你的紧绷——这份紧绷，你自己可能都习惯了。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：过度承担，把自己活成人间的海绵。愤怒和悲伤成为你主要的燃料，快乐反而让你有点不安——总觉得世上还有那么多难处，自己不该先松下来。杜甫一生颠沛，五十九岁病逝于湘江舟中，到最后心里还是天下与苍生。悲悯是珍贵的，但悲悯需要续航——先安顿好自己的人，才走得远。',
+    lifestyle:'如果你生在大唐由盛转衰的年代，你大概率是那个边逃难边记录的人——别人写盛世，你写盛世的裂缝。你要面对的挑战和他一样：看得越真切，越难自洽，时代的重量会变成你的重量。放到今天，你需要的生活是：能接触真实人间的工作、有表达出口、有几个能让你卸下"责任"的朋友。记得留一段只属于自己的、谁也不用担心的时光。',
+    growth:'你的成长方向不是少在乎，而是会分配在乎。第一，建立边界——分清"我能负责的"和"不属于我的"，把有限的力气用在前者；第二，允许自己快乐，快乐不欠世界一个解释；第三，把悲悯变成具体的小事：帮一个具体的人，胜过为抽象的千万人焦虑。你的温柔是稀缺资源，值得被好好规划，包括被你自己温柔以待。',
+    relation:'友情里你是那个先发现别人不对劲的人——饭吃到一半，对方筷子慢了半拍，你就看出来了；也是深夜求助电话会被接起的那一个。爱情里你温暖、可靠，把对方的难处当自己的事扛；只是常常忘了自己也有需要——你不是没有，是不好意思说。合作中你是团队的良心和黏合剂，愿意做没人抢的脏活；只是注意，别让"我先来"变成"永远我来"。'
+  },
+  {
+    name:'庄子',
+    title:'超脱思考者',
+    quote:'天地与我并生，而万物与我为一。',
+    scores:[8,82,48,10,28,16],
+    core:'你最核心的驱动力，多半是跳出框架。你不相信唯一的正确答案，也不太信世俗那套成功学——你在找的是更自由的理解方式。做选择时，你问的常常不是"哪个更好"，而是"这真的重要吗"：名次的榜单、旁人的眼光，在你这里常常轻得像一阵风。你和庄子相似的地方，不是经历相同，而是对既定答案的怀疑。楚王派人请他做国相，他反问：听说楚国有神龟，死后三千年被供奉在庙堂之上——它是愿意死后被供着，还是愿意活着在泥里摇尾巴？这一点你或许不陌生：别人挤破头的地方，你先问一句值不值。',
+    pattern:'你的优势多半是视角自由。同一件事，你能切换三四个维度去看：输赢之外看得失，得失之外看意义，意义之外还可以看趣味。这种能力让你在别人钻牛角尖时天然免疫，也让你常常给出别人想不到的解法。庄子妻逝，他敲盆唱歌——不是无情，是他把生死放进了更大的循环里看。你可能也是这样：世界困不住你，因为你的地图比围墙大。',
+    tension:'你的优势自带账单：想得越透，越难俯身。道理你都懂，可日子还是要交房租、赶进度、应付一个个具体的人——"这些都不重要"的清醒，落到实处，有时就成了"那就先不动了"的迟疑。超脱是视角，不是借口；看破和放弃之间，隔着一个"选择"——前者是看清之后依然清醒地活，后者是借看清之名，绕开了生活。',
+    path:'你适合的环境有三个共同点：规则允许被质疑、创意和洞察被需要、考核不唯数字。你不是不能干活，是干不了"不明白为什么"的活——意义感是你的启动键。哲学研究、创意策划、写作、独立创作、顾问咨询这类提供"看世界的新角度"的领域容易让你出彩；反过来，标准答案唯一、流程细碎、日复一日重复的地方，大概率会把你的灵气熬成脾气。',
+    perceived:'外人看你通透洒脱、不拘小节，和你聊天常有被点醒的时刻——你随口一句，别人能琢磨三天。但也可能觉得你太飘、不接地气：正事到你这儿，总被你四两拨千斤地化解掉，久了别人不敢托付大事。当年惠子做魏国国相，怕庄子来抢位置，庄子对他说：凤凰非梧桐不栖，非醴泉不饮——猫头鹰守着一只腐鼠，还怕凤凰来抢吗？你的不在乎是真的，只是别人未必懂，也未必敢用你。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：用超脱包装回避。该争取的时候说"随缘"，该表态的时候说"都行"，该努力的时候说"意义不大"——久而久之，"无所谓"从哲学变成了不作为的盾牌。庄子其实极入世：《逍遥游》通篇在讲如何才能自由，那是功夫，不是姿态。真正的超脱是带着觉知选择，不是退出选择。',
+    lifestyle:'如果你生在战国，你大概率是那个在濮水边钓鱼、不去当官的人——楚王的使者来了，你还是握着鱼竿。你要面对的挑战和他一样：看得越开，越容易被误读为不上进，你的自由需要承受别人的不解。放到今天，你需要的生活是：留白多、约束少、有安静的思考时间，外加一点够用的物质基础——自由是奢侈品，也得先付得起账单。',
+    growth:'你的成长方向不是入世，而是把智慧落地。第一，每周为你的某个洞察做一件具体的小事——想过就做的观点，才真正属于你；第二，承担一两件俗务并认真做好，自由的前提是能力，不是距离；第三，练习在关键时刻说"我要"——无所谓的姿态保护不了你在乎的东西。庄子的逍遥是"乘天地之正，御六气之辩"——那是驾驭，不是躲开。',
+    relation:'友情里你是灵魂对话者：别人心里打了结才来找你，你也总能递过去一把新钥匙；只是日常的热络你不擅长，朋友来了又走，像风过廊下，留下的不多。爱情里你包容、不粘人，给对方极大的空间；可"都行""随便"听多了，对方会疑心你到底在不在乎——重要的事上，你需要表态，让对方知道自己被你认真选过。合作中你是点子库和减压阀，别当执行者，那是彼此的为难。'
+  },
+  {
+    name:'张良',
+    title:'幕后策划者',
+    quote:'运筹帷幄之中，决胜千里之外。',
+    scores:[12,16,98,8,8,55],
+    core:'你最核心的驱动力，多半是看清全局。你不一定要站在台前——设计规则、把握节奏、在要害处轻轻落子，这种掌控感比聚光灯更让你满足：掌声会散，棋局不会。你和张良相似的地方，不是经历相同，而是对"位置"的理解。刘邦说：运筹帷幄之中，决胜千里之外，我不如子房——他从不争这句话里的主角。你多半也是这样：你的价值不在于出现得多，而在于出现得准。一次出手定乾坤，胜过一百次日常露脸。',
+    pattern:'你的优势多半是洞察和时机感。你习惯先在幕后观察：谁和谁在角力、局面往哪走、下一手落在哪收益最大——然后在所有人僵住的时刻，给出那个决定性的判断。楚汉相争最胶着时，是张良建议裂土分封、稳住韩信和彭越；刘邦想废太子，众人束手，是他请出商山四皓，一子落定全局。这一点你或许不陌生：你不常说话，但你说话时，局面往往已经变了。',
+    tension:'你的优势自带账单：越习惯幕后，越容易消失在幕后。功劳被拿走、建议被署名、机会被更响亮的人领走——你心里有数，嘴上不说，还替自己找补一句"我不要那个"。低调是风格，但长期不被看见，会变成被低估：资源、话语权、议价的底气，从不自动流向不出声的人。你不缺实力，缺的是让人看见的意愿。',
+    path:'你适合的环境有三个共同点：决策链条清晰、专业判断被尊重、不强制抛头露面。你要的不是清闲，是能把精力花在思考上而不是表演上。战略咨询、投资分析、政策研究、幕后策划、技术专家这类深度岗位容易让你如鱼得水；反过来，靠曝光度吃饭、天天路演汇报的地方，多半是在拿你的短板跟别人的长板打。',
+    perceived:'外人看你深谋远虑、低调有智慧，是那种关键时刻能点醒别人的人，也是朋友圈里的"隐形高手"。但也可能觉得你神秘、难以接近——你的想法藏得深，别人猜不透你在想什么，也就不敢全然信任。当年张良功成之后，自请封留侯——挑了个和刘邦初遇的小地方，此后逐渐淡出朝堂。懂的人惊叹这份清醒，不懂的人，只当你不好接近。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：把幕后活成回避。因为不必面对评判，所以永远不上场；因为总在观察，所以永远不必被检验。"智者"的形象一旦立住，你反而更不敢出手——万一输了呢？可张良的每一次妙手，背后都是真的下场布局，不是纸上推演。对你来说，最该突破的不是能力，是"被看见"这一关。',
+    lifestyle:'如果你生在秦末汉初，你大概率是那个坐在军帐角落、只在开口时被所有人看向的人。你要面对的挑战和他一样：功劳簿上排前面的从来不是你，而你必须自己消化这件事。放到今天，你需要的生活是：有思考空间、能影响结果但不必站在台上、有几位真正懂你分量的朋友。你的成就感不需要观众，但需要被少数人知道。',
+    growth:'你的成长方向不是走向台前，而是学会要回属于你的。第一，重要成果主动署名，让"这是我的判断"被听见；第二，练习直接表达野心和需求——你不说，没人替你说；第三，每季度逼自己做一次"公开出手"：讲一次方案、带一次复盘。张良留名千古，靠的不是沉默，是每个关键节点都真的落了子。你的能力，值得一个署名。',
+    relation:'友情里你是军师型存在：朋友的大事小情愿意听你分析，你给的判断也鲜少失误——只是酒过三巡话正热闹，你往往安静地坐在灯影外。爱情里你可靠、深沉，爱意藏在安排里而不是言语里；可对方需要更直接的肯定——你不说，对方真的会不确定。合作中你是隐形发动机，方案的高光底下往往垫着你的底稿；养成"定期同步想法"的习惯，让别人有机会看见你，也让你有机会被成全。'
+  },
+  {
+    name:'商鞅',
+    title:'变法革新者',
+    quote:'治世不一道，便国不法古。',
+    scores:[49,14,88,8,8,29],
+    core:'你最核心的驱动力，多半是改变规则。你相信制度的力量远大于个人的贤明——同一个问题第三次出现时，别人想的是"这次谁负责"，你想的是"这个结构哪里坏了"。做选择时，你天然倾向那条更彻底、一劳永逸的路。你和商鞅相似的地方，不是经历相同，而是对"修修补补"的不耐烦。他入秦见孝公，前两次讲王道仁政，孝公听得昏昏欲睡；第三次讲强国之术，两人畅谈数日。你可能也是这样：你的热情，只为真正的解决方案准备。',
+    pattern:'你的优势多半是结构化思维和推行意志。你能把一个复杂混乱的系统拆解出骨架，重新设计，并且敢顶着所有阻力把它落地。商鞅变法第一件事不是颁新法，而是"徙木立信"——城门立一根木头，搬过去赏五十金，当场兑现。先立信用，再推制度，这个顺序里全是章法。你多半也是这样：你的革新不是砸场子，你心里有完整的施工图。',
+    tension:'你的优势自带账单：改革越彻底，得罪的人越多。你的第一反应不是妥协，而是用结果证明——这让你往往是对的，也往往是一个人：夜深复盘，身边能说上话的人，比你想的少。推进路上，支持你的人也可能被你推到对立面：不是他们错了，是节奏太快、手段太硬。力度你从来不缺，缺的是给人心留出的缓冲带。制度需要人来执行，赢人心和赢结果，两个都要。',
+    path:'你适合的环境有三个共同点：老问题反复出现、组织真有求变意愿、你手上握有实权。你不是爱折腾，是见不得低效——烂系统在你眼前运转，比让你加班更难受。制度设计、企业变革、流程再造、政策研究、从零搭建体系这类"破旧立新"的领域容易让你立功；反过来，人情大于规则、变革口号喊得响实际按兵不动的地方，大概率会把你的锐气磨成怨气。',
+    perceived:'外人看你意志坚定、目光长远，是能推动真改变的强人，困局里大家都盼着你出手。但也可能觉得你刻薄寡恩、不近人情——你讲效率和正确，很少讲情面。当年秦国太子犯法，商鞅坚持法度不避贵戚，依律处置了太子的老师——规矩面前没有例外，这是他的原则，也为他后来的命运埋下伏笔。人们敬畏你建立的秩序，也记住了秩序落下时的重量。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：为了推行新法不惜一切代价，把人当作制度的耗材。商鞅的结局充满讽刺：他失势出逃，投宿客舍，店家说"商君之法，留宿无凭证者连坐"——他亲手定下的法令，最后困住了他自己，史称"作法自毙"。方案再正确，执行方案的人也需要被看见、被善待，否则改革的力量，迟早反噬改革者。',
+    lifestyle:'如果你生在战国，你大概率是那个抱着变法方案找明主的人——商鞅辗转数国才遇到秦孝公，一对谈就是数日数夜。你要面对的挑战和他一样：改革者往往孤独，你的远见要过很多年才被承认，而攻击你的人不会等。放到今天，你需要的生活是：有明确的改革授权、能快速看到结果的反馈机制、以及工作之外完全放松的出口——绷太久的人，需要主动松一松。',
+    growth:'你的成长方向不是收起力度，而是给变革装上缓冲。第一，主动团结盟友——把"反对者"分类，可争取的先争取，改革不是清场，是结盟；第二，练习刚柔并济，有时退半步是为了进三步，妥协不等于背叛方案；第三，给制度装上"人味"：留申诉通道、留过渡期、留例外条款。商鞅之失不在法，在于眼里只有法——你要赢的终究是人心，不只是对错。',
+    relation:'友情里你标准高、话直，能听你批评还留下来的，都是真朋友——这样的朋友不必多，也确实多不了。爱情里你能带着对方成长，你的规划里也真有对方的位置；只是家不是朝堂，对方要的是被疼爱，不是被安排和校正。合作中你是敢定规则、敢担责任的操盘手；只是别把所有慢的人自动归为阻力——有些慢，是稳。'
+  },
+  {
+    name:'刘邦',
+    title:'布衣聚王者',
+    quote:'夫运筹策帷帐之中，决胜于千里之外，吾不如子房。',
+    scores:[78,8,8,32,60,9],
+    core:'你最核心的驱动力，多半是用人成事。你不需要自己是最聪明、最能打的那个——你知道谁是，也搭得起让这些人放开手脚的台子。做选择时，你最看重的是"这件事该交给谁"：找对人，事情就成了大半。你和刘邦相似的地方，不是经历相同，而是那份清醒的自我认知。他大方承认：谋略不如张良，内政不如萧何，打仗不如韩信——可这三位人杰，都愿意为他所用。这一点你或许不陌生：把厉害的人聚起来，就是你最厉害的地方。',
+    pattern:'你的优势多半是识人和容人。你不端架子、能屈能伸，听得进最难听的意见，也放得下身段去请最傲的人。你敢用比你强的人，不怕被比下去——这种松下来的自尊，绝大多数管理者都没有。韩信要求封"代齐王"代理齐地，刘邦当场想发作，被张良踩了一脚，立刻改口：要封就封真齐王。你可能也是这样：情绪来得快，但算得清什么更重要。面子这东西，你拿得起，也放得下。',
+    tension:'你的优势自带账单：实用主义用过头，会显得无情。谁能用、谁没用了，你心里那杆秤太清楚，而被你"过秤"的人，多半也能隐约觉出这杆秤的存在。不拘小节是你的洒脱，可关键时刻寒了追随者的心，人心散起来，比聚起来快得多。还有一层：太依赖"用人"，你自己的专业本钱可能一直没在攒——哪天团队散了，你还剩什么，这个问题值得偶尔想想。',
+    path:'你适合的环境有三个共同点：靠团队成事、人际复杂需要斡旋、变化快需要临场应变。你不是考试型选手，是实战型选手——给你一个局，你能盘活它。创业、销售、公关、资源整合、团队管理这类"攒局"的领域容易让你出头；反过来，单打独斗的技术岗、论资排辈熬年头的地方，大概率埋没你最值钱的本事。',
+    perceived:'外人看你豁达大度、知人善任，自带的领袖气质，跟你相处不累——你不装。但也可能觉得你痞气、不够体面：规矩是给别人定的，你自己总在规则边缘灵活游走。当年郦食其来投，刘邦正让两个侍女洗脚，听说来的是个读书人，爱答不理；郦食其一句"你想不想取天下"，他立刻擦脚起身相迎。对体面爱答不理，对真本事来者不拒——这大概就是你给人的复杂观感。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：把人当资源，用完即搁置。刘邦坐稳天下后猜忌功臣，韩信叹"狡兔死，走狗烹"，萧何不得不自污名节自保——一起打天下的人，没能一起坐天下。你身上也有这个开关：目标完成时，就是人情结算时。可路是越走越长的，这一局赢了，下一局谁还跟你？把信用当长期资产经营，而非一次性消耗。',
+    lifestyle:'如果你生在秦末，你大概率是那个亭长出身、把各路豪杰聚成一锅粥的人——比你有背景的、比你能打的、比你读过书的，最后都围着你转。你要面对的挑战和他一样：成事之后如何待人，是比成事更难的考题。放到今天，你需要的生活是：热闹、有挑战、天天跟人打交道——清净对你不是休息，是发霉。只是每年留几天独处，听听自己心里的声音。',
+    growth:'你的成长方向不是收敛豪气，而是把信用当资产。第一，成功之后主动回馈追随者——分名、分利、分舞台，越分越多；第二，练习真诚大于权术，套路能用一时，信任才能用一世；第三，留一两个敢当面说你的老友，位置越高，这种朋友越贵。刘邦临终安排曹参、周勃辅政，格局保持到了最后——你要赢的也是长跑，不只是这一局。',
+    relation:'友情里你是大哥大姐型：朋友圈自然围着你转，谁有难处你都真帮，饭局冷了是你招呼，场子散了也是你善后。爱情里你随和、有趣、护短，跟你在一起笑声不断；只是你社交面太广，伴侣偶尔需要确认自己是特别的那个，不是众多"兄弟"里的一个。合作中你是天然的攒局人，能把资源和人缝在一起；只是别把权术用在身边人身上——信任这东西，透支一次，利息很高。'
+  },
+  {
+    name:'项羽',
+    title:'磊落征服者',
+    quote:'力拔山兮气盖世，时不利兮骓不逝。',
+    scores:[65,25,8,8,80,24],
+    core:'你最核心的驱动力，多半是光明磊落地赢。你要的不是算计来的成功，是正面硬碰硬、酣畅淋漓的征服——赢了是本事，输了也认。做选择时，你天然走那条更难但更硬气的路：抄近道赢了，你自己先瞧不上。你和项羽相似的地方，不是经历相同，而是对"体面"的执念。巨鹿之战，他破釜沉舟，只带三天口粮——不给自己留退路，也不给犹豫留余地。你多半也是这样：你信自己的力量，也信正面赢来的才算数。',
+    pattern:'你的优势多半是爆发力和人格魅力。关键时刻你敢压上全部，这种孤注一掷的气势本身就是战斗力；同时你的坦荡和真实自带感染力——欣赏你的人是真欣赏，愿意跟着你冲锋。项羽二十四岁起兵，二十七岁分封十八路诸侯，成为西楚霸王——巨鹿城下，诸侯将领在壁垒上观战，看完之后"无不膝行而前，莫敢仰视"。这一点你或许不陌生：你的存在感不用争取，是气场里带的。',
+    tension:'你的优势自带账单：越是相信自己的力量，越难接受"迂回"。谋略、等待、妥协，在你看来多少有点不体面——绕后取胜的巧劲，赢了你也觉得胜之不武。可成大事的路上，这些恰恰是必修课。你对"用不光彩手段赢"的人天然不屑，这份清高护住了你的骄傲，也常让你错过本可以拿下的局面。硬实力能赢下一场战斗；要赢下一整场战争，还需要别的。',
+    path:'你适合的环境有三个共同点：有真刀真枪的胜负、个人能力直接决定结果、舞台足够大。你不是不能合作，是受不了"磨"——议而不决、算计平衡的场合会耗干你。竞技体育、销售攻坚、创业突围、个人IP、需要个人魅力和巅峰表现的领域容易让你封王；反过来，讲究熬资历、比忍耐、暗中博弈的地方，大概率会让你觉得憋屈。',
+    perceived:'外人看你气吞山河、英勇果决，是大家心里的战神，危难时刻人们潜意识里都会看向你。但也可能觉得你刚愎自用、听不进话——你认定的方向，九头牛拉不回，劝你的人反而容易受伤。当年鸿门宴，范增多次举玦示意，项羽默然不应——他不是没看懂，是觉得趁人之危不英雄。你给人的感觉也是这样：可敬，也可叹。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：用骄傲喂养判断。只听得进顺耳的话，慢慢身边只剩顺耳的人；一次一次地赢，让"我会赢"变成信仰，直到遇到赢不了的那次。垓下被围，四面楚歌，项羽突围至乌江，亭长撑船等他过江，他说"纵江东父兄怜而王我，我何面目见之"，不肯渡江。他赢下了历史几乎所有的单场对决，却输掉了整个天下。你的骄傲是你的铠甲，别让它变成盲区。',
+    lifestyle:'如果你生在秦末，你大概率是那个巨鹿城下以一当十的少年将军——二十四岁，诸侯跪拜。你要面对的挑战和他一样：你的天下是用勇气打下来的，可守天下要的东西，勇气给不了。放到今天，你需要的生活是：有对手、有擂台、有明确的胜负和掌声。平庸会困住你，认输也不会——你最需要的功课，是学会战略性后退。',
+    growth:'你的成长方向不是学会圆滑，而是给骄傲装上护栏。第一，练习听完再反驳——不同意见不是挑衅，是免费的风险提示；第二，承认个人能力有边界，找到你的"范增"并且真的听他的；第三，练习说"这局我认输"——认输不是耻辱，是把力气留给下一局。项羽输给了天时和性格，你比他幸运：你有的是机会重来。',
+    relation:'友情里你是护短的大哥：肯为兄弟两肋插刀，你的信任不是喝出来的，是一起扛过事扛出来的。爱情里你深情、专一到骨子里——霸王别姬，虞姬是他溃败路上唯一放不下的人；只是你的强势和好胜心，会让伴侣又爱又累。合作中你是锋线尖刀，攻坚克难无人能敌；注意把"听劝"也练成你的本事，你的团队需要你的勇，也需要你活着走到终点。'
+  },
+  {
+    name:'王维',
+    title:'山水禅心者',
+    quote:'行到水穷处，坐看云起时。',
+    scores:[8,57,10,59,8,11],
+    core:'你最核心的驱动力，多半是美与宁静。喧嚣的世界里，你守得住心里那一片澄澈——一段晚风、半盏茶的热气、下班路上偶然抬头的一角天空，都能让你安静下来，像溪水漫过石头。做选择时，你天然避开冲突和争夺，选那条更安静的路。你和王维相似的地方，不是经历相同，而是对"独处"的深情。他半官半隐，在辋川别业写"行到水穷处，坐看云起时"——走到水尽头，不焦虑，坐下看云。你可能也是这样：世界很吵，但你的心里有静音键。',
+    pattern:'你的优势多半是审美力和内在秩序。你对美的感知是本能的：一段光影、一个句子的节奏、一个空间的气韵，别人无感的东西你能看出层次。同时你有罕见的能力——不需要外界认可也能自洽，独处不是你的消耗，是你的充电。王维的诗画被后世推为"诗中有画，画中有诗"，他一生没怎么争，苏轼却把他与李白并称。你多半也是这样：不声不响，自成境界。',
+    tension:'你的优势自带账单：越追求平静，越容易回避波澜。该争取的时候你说"算了"，该表态的时候你说"都好"——温和久了，旁人便默认你没有立场，好的机会也就绕开你走了。淡泊是你的修养，可并非所有场合都适合淡泊：有些东西，你不伸手，就真的不是你的了。宁静可以有力量，前提是它出于选择，而不是出于回避。',
+    path:'你适合的环境有三个共同点：节奏可控、有审美空间、不需要天天打仗。你不是不能拼，是拼完需要大段留白来回血——持续高压的环境会让你枯萎得比谁都快。艺术创作、设计、内容、教育、研究、疗愈类工作这类产出靠质不靠量的领域容易让你活得好；反过来，狼性文化、数据轰炸、事事追热点的地方，大概率会把你的灵气磨成麻木。',
+    perceived:'外人看你温润如玉、超然物外，是真正有雅趣的人，和你相处如清风拂面，没有压力。但也可能觉得你冷淡、不够入世——你的客气里有一道门，多数人走不进。当年王维状元及第，仕途却屡屡受挫，安史之乱中处境艰难，乱平之后更是半隐辋川，吃斋念佛，写下"晚年唯好静，万事不关心"。别人看到的从容，是一段故事之后的选择。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：用"看淡"包装回避。在该出手的时候退后，在该负责的时候沉默，把清静无为活成了不作为——反正一切都会过去，何必努力。可王维的淡，是见过盛唐顶点风光之后的放下，才有资格说不要。未经战斗的平静只是平静，经过战斗的平静才是境界。你的温柔，需要一点锋芒来守。',
+    lifestyle:'如果你生在盛唐，你大概率是那个在长安做官、心在辋川的人——别人挤官道，你买山庄；别人论功名，你谈禅。你要面对的挑战和他一样：时代起风的时候，想独善其身的人往往身不由己。放到今天，你需要的生活是：有亲近自然的时间、有独处的空间、有滋养感官的爱好——书画、音乐、草木，都是你的电量。留白不是浪费，是你的刚需。',
+    growth:'你的成长方向不是更出世，而是练习入世的勇气。第一，在小事上练习表态——点菜、选方案，明确说出"我想要这个"；第二，遇到该争取的事，出手一次试试，结果不重要，重要的是你突破了"算了"；第三，把你的审美变成可见的产出——作品、空间、文字，让世界知道你在想什么。温柔而坚定，宁静而有立场，才是你要修的境界。',
+    relation:'友情里你是让人放松的存在：不评判、不索取，朋友烦心时喜欢来找你坐一坐，像雨天躲进一间安静的茶馆；只是你也极少主动求助，关系便容易停在舒适的浅层。爱情里你体贴、零压力，从不给对方立规矩；可你的心思藏得深，对方猜不到时会有距离感——练习把感受说出口，哪怕笨拙。合作中你是品质和氛围的贡献者，擅长把粗糙的东西打磨精致；只是重要场合别总往后站，你的声音值得被听见。'
+  },
+  {
+    name:'李时珍',
+    title:'实践求真者',
+    quote:'身如逆流船，心比铁石坚。',
+    scores:[8,8,25,70,8,36],
+    core:'你最核心的驱动力，多半是实证。你不迷信古书和权威——写在纸上的道理，你要亲眼见过、亲手验过才肯信；别人转述的结论，你心里总会先打个问号，像老药师抓药，一味一味都要过手。你和李时珍相似的地方，不是经历相同，而是那份"较真"。他发现历代本草医书错误百出，很多记载互相矛盾，索性辞去太医院的职位，用二十七年重修本草——踏遍大江南北，亲验草木，访问药农渔夫，三易其稿，写成《本草纲目》。这一点你或许不陌生：你信的每一个结论，都愿意自己验证一遍。',
+    pattern:'你的优势多半是严谨和持久。你做事有一套自己的验证流程：来源可不可靠、样本够不够、结论能不能复现——别人眼里的较真，是你眼里的常识。这种特质让你产出的东西特别扎实：你说过的话、给过的结论，别人基本不用担心翻车。李时珍为了弄清一味药的性状，会同时参考几十种文献，再亲自到产地看实物、问当地人——"一一采视，颇得其真"。你可能也是这样：你的专业信誉，是一次次较真攒出来的。',
+    tension:'你的优势自带账单：钻得越深，抬头越少。一个课题能让你闭关很久，等回过神来，窗外的树都绿过一轮了，人也疏远了。你不是不在乎关系，是注意力一旦扎进事里，其他一切自动静音。还有一层：实证精神用在事上是严谨，用在人身上就成了较劲——感情、缘分这些没法验证的东西，会让你手足无措，甚至干脆绕开。',
+    path:'你适合的环境有三个共同点：专业深度被尊重、成果有客观标准、容得下长期钻研。你不是怕慢，是怕被催着交"差不多就行"的东西——糊弄对你近乎生理不适。医学、科研、考据、产品研发、工程、质检这类真伪立判的领域容易让你站稳；反过来，靠包装、讲故事、快速试错迭代的地方，大概率会让你怀疑人生。',
+    perceived:'外人看你踏实严谨、专注可靠，是真正的专业人士，你经手的东西自带"免检"标签。但也可能觉得你无趣、不懂变通——你对模糊地带的不耐烦，会让人觉得难以商量。当年李时珍编书，深知以讹传讹害人，把前人书里的错误一一标注更正，得罪了不少因循守旧的同行。你的认真有人感激，也有人嫌烦——可时间最后记住的，往往是你这种人。',
+    shadow:'如果完全不设防，这种人格容易滑向一个方向：只见树木，不见人间。把所有精力投入实证世界，对人情世故的耐心越来越少，最后活成一座孤岛——专业上是行家，生活里是独行侠。《本草纲目》写成后，李时珍为求出版奔波多年，直到去世前才等来刻印——书里有万物，人间的路他却走得很辛苦。你也有类似的风险：世界不只靠真理由人推进，还靠人与人的连接。',
+    lifestyle:'如果你生在明代，你大概率是那个背着药篓翻山的人——太医院的安稳职位说放下就放下，只为把药性一味一味弄清楚。你要面对的挑战和他一样：较真的人走得慢，成果要等很多年才被看见，中途的寂寞得自己消化。放到今天，你需要的生活是：有稳定安静的钻研时间、有实地考察或动手的机会、有能聊专业的同好。深度是你的舒适区，也记得偶尔上浮透透气。',
+    growth:'你的成长方向不是放松标准，而是打开视野。第一，每周留一段"无用"的时间——读和专业无关的书、见不同行业的人，直觉和灵感常从这里来；第二，把亲近的人也放进日程，关系也是需要"实证投入"的课题，只是成果以年计；第三，练习接受"不够完美但足够及时"——验证永远做不完，有些结论，先发布再迭代。李时珍伟大，不在于他验完了所有，而在于他开始动手的那一刻。',
+    relation:'友情里你是实在人：不玩虚的，答应的事一定办到，朋友的信任是你一件一件攒出来的。爱情里你务实、可靠，关心都做在事上——对方的体检指标你记得，比一百句晚安都实在；只是伴侣偶尔也想要点"没用"的浪漫，一枝花，一顿忽然想吃的宵夜。合作中你是质量的守门员，团队因你而可信；把"为什么不行"的解释耐心留一点给外行，他们会更愿意配合你。'
+  }
+];
+
+const QUESTIONS = [
+  { q:'一个方向还不清楚的项目，突然要求提前两周交付。你会先？', opts:[
+    { t:'召集关键人，把今天必须确定的事先定下来', s:[2,0,1,1,0,1] },
+    { t:'做一个能验证方向的小样，边跑边调', s:[0,2,0,0,2,0] },
+    { t:'把已有资料、风险和缺口整理清楚，再排优先级', s:[0,0,2,0,0,1] },
+    { t:'分别问问真正执行的人，先弄清大家卡在哪里', s:[1,0,0,2,0,1] },
+    { t:'把目标拆成能持续完成的小段，先稳住节奏', s:[1,0,1,1,0,2] }
+  ]},
+  { q:'你认真准备的点子被大家沉默地略过，你更可能？', opts:[
+    { t:'把它说得更具体，主动争取一次讨论机会', s:[2,0,1,0,1,0] },
+    { t:'换一种更有画面感的表达，让大家看见可能性', s:[0,2,0,1,1,0] },
+    { t:'问清大家顾虑什么，再判断是否值得继续推动', s:[0,0,2,1,0,1] },
+    { t:'先不急着证明自己，听完每个人的想法', s:[0,0,1,2,0,1] },
+    { t:'记下来，等方案更完整或时机更合适再提出', s:[0,1,0,0,1,2] }
+  ]},
+  { q:'换工作、买大件这种重要决定，你一般怎么拿主意？', opts:[
+    { t:'收集信息，列利弊清单', s:[0,0,2,0,0,1] },
+    { t:'跟着直觉走', s:[0,1,0,0,2,0] },
+    { t:'问问信任的人怎么看', s:[1,0,0,2,0,0] },
+    { t:'想最坏结果能不能承受', s:[0,0,0,0,0,2] },
+    { t:'纠结很久，往往拖着难以下决心', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'手头冒出件麻烦事，你一般怎么办？', opts:[
+    { t:'立刻处理，不想拖着', s:[2,0,0,0,0,1] },
+    { t:'先放一边，等思路来了再说', s:[0,2,0,0,0,0] },
+    { t:'找有经验的人请教', s:[0,0,0,1,1,0] },
+    { t:'列步骤按部就班解决', s:[0,0,1,0,0,2] },
+    { t:'能拖就拖，拖到最后才处理', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'几个人搭伙做事，你一般是干啥的？', opts:[
+    { t:'牵头组织，推进进度', s:[2,0,1,0,0,0] },
+    { t:'出主意、想新玩法', s:[0,2,0,0,1,0] },
+    { t:'照顾大家情绪，调和关系', s:[0,0,0,2,0,1] },
+    { t:'默默把分配的事做好', s:[0,0,1,0,0,2] },
+    { t:'不太想揽事，做完自己那份就行', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'你和很亲近的人在一件重要选择上意见相反，你会？', opts:[
+    { t:'把自己的底线和理由讲清楚，不让问题悬着', s:[2,0,1,1,1,0] },
+    { t:'一起找找双方都没想到的第三种方案', s:[0,2,1,1,1,0] },
+    { t:'把各自可能承担的后果摆出来，再作决定', s:[0,0,2,0,0,1] },
+    { t:'先理解对方真正担心什么，再谈结论', s:[0,0,0,2,0,1] },
+    { t:'暂时不强求一致，给彼此一点消化时间', s:[0,0,1,1,0,2] }
+  ]},
+  { q:'想学个新东西，你一般啥情况？', opts:[
+    { t:'先搞懂原理再动手', s:[0,0,2,0,0,1] },
+    { t:'直接上手边做边学', s:[0,1,0,0,2,0] },
+    { t:'找个人带着入门最快', s:[1,0,0,2,0,0] },
+    { t:'每天练一点慢慢来', s:[0,0,0,0,0,2] },
+    { t:'热情来得快，往往去得也快', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'开会时你的方案被人当众质疑，你会？', opts:[
+    { t:'用数据和逻辑回应', s:[1,0,2,0,0,1] },
+    { t:'先听完再吸收合理部分', s:[0,0,1,2,0,0] },
+    { t:'当场据理力争', s:[2,0,0,0,1,0] },
+    { t:'不被影响，坚持自己判断', s:[0,0,0,0,0,2] },
+    { t:'脸上有点挂不住，心里不太舒服', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'干活的时候，你一般是什么状态？', opts:[
+    { t:'多线程推进，节奏紧凑', s:[2,0,0,0,1,0] },
+    { t:'按自己节奏来，不被打扰', s:[0,2,1,0,0,0] },
+    { t:'和大家协作，有商有量', s:[1,0,0,2,0,0] },
+    { t:'专注一件事做到底', s:[0,0,0,0,0,2] },
+    { t:'压力越小越好，清闲点挺好', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'明显不公平的事让你碰上了，你多半会？', opts:[
+    { t:'直接站出来表态', s:[2,0,0,0,1,0] },
+    { t:'先冷静判断形势', s:[0,0,2,0,0,0] },
+    { t:'私下安慰受影响的人', s:[0,0,0,2,0,0] },
+    { t:'用持续行动慢慢改变', s:[0,0,0,0,0,2] },
+    { t:'看看就行，不想惹麻烦', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'有个成功率不高、但可能改变现状的机会摆在面前，你会？', opts:[
+    { t:'判断值得就拉上资源，尽快把窗口抓住', s:[2,0,1,0,2,0] },
+    { t:'把它当成一次探索，哪怕结果未知也想试试', s:[0,2,0,0,2,0] },
+    { t:'先设定投入上限和退出条件，再决定要不要做', s:[0,0,2,0,1,1] },
+    { t:'问问会受影响的人，确认这不是只对自己有利', s:[1,0,0,2,0,1] },
+    { t:'先用低成本方式试出一点信号，再决定投入多少', s:[0,1,1,0,1,2] }
+  ]},
+  { q:'团队里有人能力很强，却总让其他人不舒服。你倾向？', opts:[
+    { t:'明确指出问题，帮大家把合作规则讲清楚', s:[2,0,1,1,0,1] },
+    { t:'调整分工，让他的优势用在更合适的位置', s:[1,2,0,1,0,1] },
+    { t:'先看这是否真的影响产出，再决定介入方式', s:[0,0,2,0,0,1] },
+    { t:'分别和相关的人聊，避免有人一直忍着', s:[1,0,0,2,0,1] },
+    { t:'设一个观察期限，收集具体情况后再处理', s:[0,0,2,1,0,2] }
+  ]},
+  { q:'碰到一团乱麻的复杂问题，你一般？', opts:[
+    { t:'拆成小问题逐个击破', s:[1,0,2,0,0,0] },
+    { t:'换个角度找新解法', s:[0,2,0,0,1,0] },
+    { t:'找人讨论碰撞思路', s:[1,0,0,2,0,0] },
+    { t:'死磕到底直到解决', s:[0,0,0,0,0,2] },
+    { t:'容易烦躁，不太想碰它', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'压力大到喘不过气时，你会？', opts:[
+    { t:'运动或出去走走释放', s:[0,0,0,0,2,0] },
+    { t:'做点喜欢的事转移注意力', s:[0,2,0,0,0,0] },
+    { t:'找朋友倾诉', s:[0,0,0,2,0,0] },
+    { t:'咬牙扛过去', s:[0,0,1,0,0,2] },
+    { t:'什么都不想干，先躺一阵', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'推不掉的社交场合，你多半是啥样？', opts:[
+    { t:'主动搭话，带动气氛', s:[2,0,0,0,1,0] },
+    { t:'找有趣的人深聊', s:[0,2,0,1,0,0] },
+    { t:'照顾到每个人的感受', s:[0,0,0,2,0,0] },
+    { t:'安静观察，偶尔插话', s:[0,0,2,0,0,1] },
+    { t:'能躲就躲，盼着早点回家', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'深夜睡不着，一想到以后，你更多的是？', opts:[
+    { t:'接下来的路怎么走，心里挺清楚', s:[2,0,1,0,0,1] },
+    { t:'走到哪儿算哪儿，说不定有惊喜', s:[0,2,0,0,1,0] },
+    { t:'盼着和身边人一起把日子过好', s:[0,0,0,2,0,0] },
+    { t:'把眼前的日子过稳当就行', s:[0,0,0,0,0,2] },
+    { t:'有点迷茫，走一步看一步', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'看到感人的电影，你会？', opts:[
+    { t:'感动但不太表现出来', s:[0,0,1,0,0,1] },
+    { t:'看完回味很久', s:[0,2,0,1,0,0] },
+    { t:'容易代入甚至流泪', s:[0,0,0,2,0,0] },
+    { t:'分析剧情为什么打动人', s:[0,0,2,0,0,0] },
+    { t:'不太容易被打动', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'和人意见不合的时候，你一般？', opts:[
+    { t:'坚持立场，据理力争', s:[2,0,0,0,1,0] },
+    { t:'提出折中方案找共识', s:[0,2,0,0,0,1] },
+    { t:'先理解对方的出发点', s:[0,0,0,2,0,0] },
+    { t:'不争辩，自己心里有数', s:[0,0,1,0,0,1] },
+    { t:'不想争，表面附和心里保留', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'要是能挑，你想在什么样的地方干活？', opts:[
+    { t:'有挑战、有竞争', s:[2,0,0,0,1,0] },
+    { t:'自由、鼓励创新', s:[0,2,0,0,1,0] },
+    { t:'和谐、互帮互助', s:[1,0,0,2,0,0] },
+    { t:'稳定、职责清晰', s:[0,0,1,0,0,2] },
+    { t:'轻松安稳就好，别太折腾', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'高风险高回报的机会摆在面前，你会？', opts:[
+    { t:'评估后值得就果断出手', s:[1,0,1,0,2,0] },
+    { t:'被未知吸引想试试', s:[0,2,0,0,2,0] },
+    { t:'先问信任的人意见', s:[0,0,0,2,0,0] },
+    { t:'谨慎，不做没把握的事', s:[0,0,2,0,0,1] },
+    { t:'本能想躲，还是安稳点好', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'身边人身上，你最欣赏哪股劲？', opts:[
+    { t:'果断有魄力', s:[2,0,0,0,1,0] },
+    { t:'聪慧有想法', s:[0,2,1,0,0,0] },
+    { t:'善良有温度', s:[0,0,0,2,0,0] },
+    { t:'坚韧能扛事', s:[0,0,0,0,0,2] },
+    { t:'说不清，好像没有特别欣赏的', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'平时做选择，你最看重啥？', opts:[
+    { t:'结果和效率', s:[2,0,1,0,0,0] },
+    { t:'自己是否真的想做', s:[0,2,0,0,1,0] },
+    { t:'对身边人的影响', s:[0,0,0,2,0,0] },
+    { t:'是否稳妥可控', s:[0,0,1,0,0,2] },
+    { t:'省事就好，不想太麻烦', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'朋友遇到难处，你会？', opts:[
+    { t:'主动帮他想解决方案', s:[2,0,1,0,0,0] },
+    { t:'帮他分析利弊出主意', s:[0,0,2,0,0,0] },
+    { t:'陪伴在他身边', s:[0,0,0,2,0,0] },
+    { t:'默默支持，等他需要时出现', s:[0,0,0,1,0,2] },
+    { t:'想帮，但不知道能做什么', s:[0,0,0,1,0,0] }
+  ]},
+  { q:'新出了个挺死板的规定，你怎么想？', opts:[
+    { t:'规定是人定的，执行时可以灵活点', s:[2,0,0,0,1,0] },
+    { t:'不合理就该提出来改', s:[0,2,0,0,2,0] },
+    { t:'先想想规定背后的道理', s:[0,0,1,2,0,0] },
+    { t:'既然定了，就按规矩来', s:[0,0,1,0,0,2] },
+    { t:'没想那么多，大家咋办我咋办', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'一件投入了半年的事始终没有明显反馈，你会？', opts:[
+    { t:'重设阶段目标，让自己和伙伴都知道下一步往哪走', s:[2,0,1,0,0,2] },
+    { t:'给过程加一点新玩法，重新找回投入感', s:[0,2,0,0,1,1] },
+    { t:'用数据复盘投入和产出，决定继续还是调整', s:[0,0,2,0,0,2] },
+    { t:'找同路人互相督促，不让自己一个人硬扛', s:[1,0,0,2,0,1] },
+    { t:'保留固定节奏继续做，相信有些积累需要时间', s:[0,1,0,0,0,2] }
+  ]},
+  { q:'定了个要熬大半年的目标（比如考证、减肥），你会？', opts:[
+    { t:'拆成阶段逐个完成', s:[1,0,2,0,0,0] },
+    { t:'保持热情灵活推进', s:[0,2,0,0,1,0] },
+    { t:'找志同道合的人一起', s:[1,0,0,2,0,0] },
+    { t:'不管多难坚持到底', s:[0,0,0,0,0,2] },
+    { t:'开头热情，往往坚持不了多久', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'一群人讨论问题的时候，你习惯？', opts:[
+    { t:'主导方向，推动得出结论', s:[2,0,0,0,0,1] },
+    { t:'提出别人没想到的角度', s:[0,2,0,0,1,0] },
+    { t:'确保每个人都有发言权', s:[0,0,0,2,0,0] },
+    { t:'基于事实和逻辑发言', s:[0,0,2,0,0,0] },
+    { t:'能不发言就不发言', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'精心准备的东西搞砸了，你先干嘛？', opts:[
+    { t:'快速复盘调整策略', s:[1,0,2,0,0,0] },
+    { t:'换条路重新出发', s:[0,1,0,0,2,0] },
+    { t:'找信任的人聊聊', s:[0,0,0,2,0,0] },
+    { t:'告诉自己不能放弃', s:[0,0,0,0,0,2] },
+    { t:'先难受好一阵，一时半会儿走不出来', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'你怎么看"跟别人不太一样"这件事？', opts:[
+    { t:'敢于引领的人自然与众不同', s:[2,0,0,0,1,0] },
+    { t:'与众不同是创造力的来源', s:[0,2,1,0,0,0] },
+    { t:'每个人本来就不同，尊重就好', s:[0,0,0,2,0,0] },
+    { t:'做自己，不用刻意求不同', s:[0,0,0,0,0,2] },
+    { t:'有点怕太突出，随大流更安心', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'被朋友误会了，你会？', opts:[
+    { t:'主动沟通把话说开', s:[2,0,0,0,0,1] },
+    { t:'不解释，时间会证明', s:[0,1,0,0,0,2] },
+    { t:'主动示好修复关系', s:[0,0,0,2,1,0] },
+    { t:'反思自己哪里没做好', s:[0,0,2,1,0,0] },
+    { t:'懒得解释，心里憋着', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'出了个新鲜玩意儿（新 App、新玩法），你的态度是？', opts:[
+    { t:'研究清楚利弊再尝试', s:[0,0,2,0,0,1] },
+    { t:'充满好奇想立刻体验', s:[0,1,0,0,2,0] },
+    { t:'看身边人用得怎么样', s:[0,0,0,2,0,0] },
+    { t:'等成熟稳定了再跟进', s:[0,0,1,0,0,1] },
+    { t:'有点抵触，习惯旧的就挺好', s:[0,0,0,0,0,0] }
+  ]},
+  { q:'要是人生能重来一次，你会更想？', opts:[
+    { t:'抓住那些没敢尝试的机会', s:[1,0,0,0,2,0] },
+    { t:'活出更多不一样的可能', s:[0,2,0,0,1,0] },
+    { t:'多花时间陪重要的人', s:[0,0,0,2,0,0] },
+    { t:'踏实地走好每一步', s:[0,0,1,0,0,2] },
+    { t:'说不好，大概还是老样子', s:[0,0,0,0,0,0] }
+  ]}
+];
+
+let scores = [0,0,0,0,0,0];
+let qIdx = 0;
+let selected = null;
+let answers = new Array(32).fill(null);
+let chartInstance = null;
+let autoAdvanceTimer = null;
+let optOrder = [];
+
+function initShuffle() {
+  optOrder = QUESTIONS.map(q => {
+    const idx = q.opts.map((_, i) => i);
+    for (let i = idx.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [idx[i], idx[j]] = [idx[j], idx[i]];
+    }
+    return idx;
+  });
+}
+
+function startTest() {
+  document.getElementById('screen-intro').classList.add('hidden');
+  document.getElementById('screen-quiz').classList.remove('hidden');
+  scores = [0,0,0,0,0,0];
+  qIdx = 0;
+  selected = null;
+  answers = new Array(32).fill(null);
+  initShuffle();
+  renderQuestion();
+}
+
+function renderQuestion() {
+  if (qIdx >= QUESTIONS.length) { startLoading(); return; }
+  if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+  const q = QUESTIONS[qIdx];
+  document.getElementById('question-text').textContent = q.q;
+  document.getElementById('quiz-counter').textContent = `${qIdx+1} / ${QUESTIONS.length}`;
+  document.getElementById('progress-fill').style.width = (qIdx / QUESTIONS.length * 100) + '%';
+
+  const container = document.getElementById('options-container');
+  const keys = ['A','B','C','D','E'];
+  container.innerHTML = '';
+  selected = null;
+
+  optOrder[qIdx].forEach((origIdx, pos) => {
+    const opt = q.opts[origIdx];
+    const b = document.createElement('button');
+    b.className = 'option';
+    b.dataset.orig = origIdx;
+    b.innerHTML = `<span class="option-key">${keys[pos]}</span><span class="option-text">${opt.t}</span>`;
+    b.onclick = () => selectOption(origIdx);
+    if (answers[qIdx] === origIdx) { b.classList.add('selected'); selected = origIdx; }
+    container.appendChild(b);
+  });
+
+  updateNav();
+  window.scrollTo(0,0);
+}
+
+function selectOption(i) {
+  if (autoAdvanceTimer) { clearTimeout(autoAdvanceTimer); autoAdvanceTimer = null; }
+  selected = i;
+  answers[qIdx] = i;
+  document.querySelectorAll('.option').forEach(b => b.classList.toggle('selected', +b.dataset.orig === i));
+  updateNav();
+  const currentQ = qIdx;
+  autoAdvanceTimer = setTimeout(() => {
+    if (qIdx === currentQ && answers[qIdx] === i) nextQuestion();
+  }, 220);
+}
+
+function updateNav() {
+  document.getElementById('btn-prev').style.visibility = qIdx === 0 ? 'hidden' : 'visible';
+  const next = document.getElementById('btn-next');
+  if (selected !== null) {
+    next.classList.add('active');
+    next.textContent = qIdx === QUESTIONS.length - 1 ? '查看结果' : '下一题';
+  } else {
+    next.classList.remove('active');
+    next.textContent = '下一题';
+  }
+}
+
+function prevQuestion() {
+  if (qIdx > 0) {
+    qIdx--;
+    selected = answers[qIdx];
+    renderQuestion();
+  }
+}
+
+function nextQuestion() {
+  if (selected === null) return;
+  qIdx++;
+  selected = answers[qIdx] !== null ? answers[qIdx] : null;
+  if (qIdx >= QUESTIONS.length) startLoading();
+  else renderQuestion();
+}
+
+function startLoading() {
+  document.getElementById('screen-quiz').classList.add('hidden');
+  document.getElementById('screen-loading').classList.remove('hidden');
+  window.scrollTo(0,0);
+
+  const steps = [
+    { text:'校验答题数据完整性', sub:'VALIDATING 32 RESPONSES' },
+    { text:'计算六维心理特征得分', sub:'CALCULATING DIMENSION SCORES' },
+    { text:'归一化处理与权重校准', sub:'NORMALIZING PROFILE' },
+    { text:'匹配历史人物原型库（24位）', sub:'MATCHING ARCHETYPE DATABASE' },
+    { text:'比对原型特征与答题线索', sub:'COMPARING ARCHETYPES' },
+    { text:'生成个人专属分析报告', sub:'GENERATING REPORT' }
+  ];
+
+  const container = document.getElementById('loading-steps');
+  const bar = document.getElementById('loading-bar-fill');
+  container.innerHTML = steps.map((s, i) => `
+    <div class="loading-step" id="ls-${i}">
+      <div class="step-dot">${i+1}</div>
+      <div class="step-text">${s.text}</div>
+      <div class="step-pct" id="lp-${i}">--</div>
+    </div>
+  `).join('');
+
+  let step = 0;
+  function runStep() {
+    if (step > 0) {
+      document.getElementById('ls-'+(step-1)).classList.remove('active');
+      document.getElementById('ls-'+(step-1)).classList.add('done');
+      document.getElementById('ls-'+(step-1)).querySelector('.step-dot').innerHTML = '✓';
+      document.getElementById('lp-'+(step-1)).textContent = '100%';
+    }
+    if (step >= steps.length) {
+      bar.style.width = '100%';
+      setTimeout(() => showResult(), 500);
+      return;
+    }
+    document.getElementById('ls-'+step).classList.add('active');
+    document.getElementById('loading-sub').textContent = steps[step].sub;
+    const prog = ((step) / steps.length) * 100;
+    bar.style.width = prog + '%';
+    let p = 0;
+    const pctEl = document.getElementById('lp-'+step);
+    const pctInt = setInterval(() => {
+      p += Math.floor(Math.random()*15)+10;
+      if (p >= 100) { p = 100; clearInterval(pctInt); }
+      pctEl.textContent = p + '%';
+    }, 120);
+    step++;
+    setTimeout(runStep, 700 + Math.random()*400);
+  }
+  setTimeout(runStep, 400);
+}
+
+function showResult() {
+  document.getElementById('screen-loading').classList.add('hidden');
+  document.getElementById('screen-result').classList.remove('hidden');
+
+  const finalScores = [0,0,0,0,0,0];
+  answers.forEach((ansIdx, qIndex) => {
+    if (ansIdx !== null) {
+      const s = QUESTIONS[qIndex].opts[ansIdx].s;
+      for (let i = 0; i < 6; i++) finalScores[i] += s[i];
+    }
+  });
+
+  const dimMax = [0,0,0,0,0,0];
+  QUESTIONS.forEach(q => {
+    for (let i = 0; i < 6; i++) {
+      let maxInQ = 0;
+      q.opts.forEach(opt => { if (opt.s[i] > maxInQ) maxInQ = opt.s[i]; });
+      dimMax[i] += maxInQ;
+    }
+  });
+
+  const norm = finalScores.map((s, i) => {
+    const v = Math.round((s / dimMax[i]) * 100);
+    return Math.max(8, Math.min(100, v));
+  });
+
+  const MU = [13.76, 13.00, 14.50, 17.00, 11.26, 17.00];
+  const SIGMA = [4.08, 4.21, 3.85, 4.82, 3.38, 4.32];
+  const zUser = finalScores.map((s, i) => (s - MU[i]) / SIGMA[i]);
+  const zFigures = FIGURES.map(f => f.scores.map((pct, i) => (pct/100*dimMax[i] - MU[i]) / SIGMA[i]));
+
+  function shapeDistance(za, zb) {
+    const meanA = za.reduce((s,v) => s+v, 0) / za.length;
+    const meanB = zb.reduce((s,v) => s+v, 0) / zb.length;
+    const ca = za.map(v => v - meanA);
+    const cb = zb.map(v => v - meanB);
+    const normA = Math.sqrt(ca.reduce((s,v) => s+v*v, 0)) || 1;
+    const normB = Math.sqrt(cb.reduce((s,v) => s+v*v, 0)) || 1;
+    let d = 0;
+    for (let i = 0; i < za.length; i++) {
+      d += Math.pow(ca[i]/normA - cb[i]/normB, 2);
+    }
+    return Math.sqrt(d);
+  }
+
+  const ranked = FIGURES.map((f, fi) => {
+    return { figure: f, dist: shapeDistance(zUser, zFigures[fi]) };
+  }).sort((a, b) => a.dist - b.dist);
+
+  const best = ranked[0].figure;
+  const similar = ranked.slice(1, 4);
+  const bestDist = ranked[0].dist;
+  const confidence = Math.max(55, Math.min(96, Math.round(96 - bestDist * 40)));
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const dateStr = `${now.getFullYear()}.${pad(now.getMonth()+1)}.${pad(now.getDate())}`;
+  const idStr = Math.random().toString(36).slice(2,8).toUpperCase();
+  document.getElementById('report-date').textContent = dateStr;
+  document.getElementById('report-id').textContent = idStr;
+  document.getElementById('result-name').textContent = best.name;
+  document.getElementById('result-title').textContent = best.title;
+  document.getElementById('result-quote').textContent = best.quote;
+  document.getElementById('meta-proximity').textContent = confidence + '%';
+
+  const dimSorted = norm.map((v, i) => ({ v, name: DIMS[i], i })).sort((a, b) => b.v - a.v);
+  document.getElementById('meta-top-val').textContent = dimSorted[0].v;
+  document.getElementById('meta-top-name').textContent = dimSorted[0].name;
+  document.getElementById('meta-bottom-val').textContent = dimSorted[5].v;
+  document.getElementById('meta-bottom-name').textContent = dimSorted[5].name;
+  document.getElementById('result-core').textContent = buildOpeningScene(norm);
+  renderAnswerEvidence(norm);
+  document.getElementById('result-pattern').textContent = best.pattern;
+  document.getElementById('result-tension').textContent = best.tension;
+  document.getElementById('result-path').textContent = best.path;
+  document.getElementById('result-perceived').textContent = best.perceived;
+  document.getElementById('result-shadow').textContent = best.shadow;
+  document.getElementById('result-lifestyle').textContent = best.lifestyle;
+  document.getElementById('result-growth').textContent = best.growth;
+  document.getElementById('result-relation').textContent = best.relation;
+
+  renderSimilar(similar);
+  document.getElementById('result-decision').textContent = getDecisionStyle(norm);
+  renderDimInsights(norm);
+
+  lastResultData = { norm: norm, figure: best };
+  drawChart(norm, best);
+  drawBars(norm);
+  window.scrollTo(0,0);
+}
+
+function buildOpeningScene(norm) {
+  const top = norm.map((v, i) => ({ v, i })).sort((a, b) => b.v - a.v)[0].i;
+  const scenes = [
+    '从你这次的选择看，事情忽然没人牵头时，你更可能先看清方向、把人和事重新排开，再决定自己该站到哪里。你未必想成为最显眼的人，却不太容易对失序置之不理。',
+    '从你这次的选择看，当所有人都沿着同一条路走时，你心里更容易多问一句：有没有另一种可能？你未必急着反对，却习惯为事情保留一个新角度。',
+    '从你这次的选择看，面对重要决定，你不太满足于一句“感觉可以”。你更愿意弄清事实、代价和后果；想得明白，才会真正安心。',
+    '从你这次的选择看，有人嘴上说“没事”时，你更容易留意到那句没说出口的话。你未必总能给出答案，但会先把对方当作一个正在经历什么的人。',
+    '从你这次的选择看，未知出现时，你更容易先感到一点兴奋。不是因为你不怕代价，而是你知道：有些路，只有迈进去才会显出答案。',
+    '从你这次的选择看，一件事变得漫长、枯燥甚至看不到回报时，你仍愿意把它留在心里。你未必高调，却有一种不轻易松手的劲。'
+  ];
+  return scenes[top];
+}
+
+function renderAnswerEvidence(norm) {
+  const topDims = new Set(norm.map((v, i) => ({ v, i })).sort((a, b) => b.v - a.v).slice(0, 2).map(x => x.i));
+  const evidence = answers.map((ansIdx, qIndex) => {
+    if (ansIdx === null) return null;
+    const option = QUESTIONS[qIndex].opts[ansIdx];
+    const weight = option.s.reduce((sum, v, i) => sum + (topDims.has(i) ? v : 0), 0);
+    return { q: QUESTIONS[qIndex].q, answer: option.t, weight };
+  }).filter(Boolean).sort((a, b) => b.weight - a.weight).slice(0, 3);
+  const c = document.getElementById('result-evidence');
+  c.innerHTML = evidence.map((item, index) => `
+    <div class="evidence-item"><strong>线索 ${index + 1} · ${item.q}</strong><br>你选择了“${item.answer}”</div>
+  `).join('') + '<div class="evidence-link">这些选择未必能概括完整的你，却让这份判断有了具体的来处。</div>';
+}
+
+function renderSimilar(list) {
+  function distToPct(d) {
+    return Math.max(35, Math.min(88, Math.round(88 - d * 42)));
+  }
+  const c = document.getElementById('result-similar');
+  c.innerHTML = list.map((item) => {
+    const pct = distToPct(item.dist);
+    return `
+    <div class="similar-card">
+      <div class="similar-avatar">${item.figure.name.charAt(0)}</div>
+      <div class="similar-name">${item.figure.name}</div>
+      <div class="similar-title">${item.figure.title}</div>
+      <div class="similar-pct">匹配 ${pct}%</div>
+    </div>
+  `;}).join('');
+}
+
+function renderTags(norm) {
+  const indexed = norm.map((v, i) => ({ v, i })).sort((a, b) => b.v - a.v);
+  const c = document.getElementById('result-tags');
+  c.innerHTML = indexed.slice(0, 4).map((t, idx) => `
+    <div class="tag ${idx < 2 ? 'tag-gold' : 'tag-blue'}">
+      ${idx < 2 ? '★' : '◇'} ${DIMS[t.i]} · ${t.v}
+    </div>
+  `).join('');
+}
+
+function getDecisionStyle(norm) {
+  const indexed = norm.map((v, i) => ({ v, i })).sort((a, b) => b.v - a.v);
+  const [a, b] = [indexed[0].i, indexed[1].i];
+  const combos = {
+    '0,2':'你多半习惯在掌握充分信息后果断拍板。理性往往是你的底气，领导力像是你的本能——被情绪绑架的决策，你大概不会喜欢。',
+    '0,4':'你敢于在不确定中下注。风险对你来说往往不像敌人，更像机会。你善于在关键时刻推团队一把。',
+    '0,5':'你的决策风格多半是"认准了就扛到底"。别人看短期，你看长期；别人撤退，你往往还在推进。',
+    '1,2':'你习惯用创意和逻辑一起做决定。想法也许大胆，但往往能落在理性框架内，给出出人意料的解法。',
+    '1,3':'你的决策常被价值观和可能性牵引。你关心的往往是这个选择对人好不好，有没有想象空间。',
+    '1,4':'你多半是典型的"直觉型冒险者"。新机会出现时，你大概更愿相信灵感而非层层论证。',
+    '1,5':'你往往能把天马行空的念头，靠长期坚持变成现实。创意多半是你的起点，耐力是你的护城河。',
+    '2,3':'你做决定时往往同时调用头脑和心。既能分析利弊，多半也不会忽略对人的影响。',
+    '2,5':'你的决策多半相当审慎。一旦决定，往往会用惊人的执行力一步步落实，很少半途而废。',
+    '3,4':'你愿意为他人承担风险。这份勇气往往不为私利，而是为了保护或成就你重视的人。',
+    '3,5':'你在关系中做决定时往往特别可靠。即使自己很累，你也多半会考虑别人的处境，然后咬牙坚持。',
+    '4,5':'你敢于选择最难走的路，并且往往一走到底。别人眼中的冒险，对你来说常常是必经之路。',
+    '0,1':'你既能带方向又能出新招。你的决策多半兼顾影响力和创新性，善于带领团队打开新局面。',
+    '0,3':'你做决定时往往会权衡团队与目标。你追求结果，但多半不会让结果伤害到人与人之间的信任。',
+    '2,4':'你多半会在冒险前做足功课。你的勇敢往往不是鲁莽，而是计算后的行动。',
+    '3,2':'你的决定常会经过"对人好不好"这一关。理性分析之后，你往往还会再问一句：这样公平吗？'
+  };
+  const key1 = `${a},${b}`;
+  const key2 = `${b},${a}`;
+  return combos[key1] || combos[key2] || '你的决策风格比较均衡，能在理性与感性、稳定与冒险之间找到属于自己的节奏。';
+}
+
+function renderDimInsights(norm) {
+  const insights = [
+    { i: 0, high: '这次作答里，你在影响他人、组织资源、推动方向上的倾向更明显。在需要有人把事情往前推时，你可能更愿意站出来承担一部分。', low: '这次作答里，主导局面不是你最优先的选择。你更愿意先参与、观察，或在被需要时再投入。' },
+    { i: 1, high: '这次作答里，你对新点子、新角度与可能性的偏好更明显。重复的事容易让你感到乏味，而探索会给你能量。', low: '这次作答里，你更倾向信任已被验证的方法和经验。这种稳当是优势，也为偶尔尝试新路径留出空间。' },
+    { i: 2, high: '这次作答里，你更倾向用逻辑和证据理解事情。面对复杂问题时，你会更愿意先拆开、看清，再作判断。', low: '这次作答里，你并不总把分析放在第一位。直觉与经验也会参与判断；在重要决定前补一点事实核对，会让选择更踏实。' },
+    { i: 3, high: '这次作答里，你对他人感受的留意更明显。你容易捕捉到语言背后的情绪，这既是能力，也需要适时留一点空间给自己。', low: '这次作答里，你更容易保持客观，不轻易被情绪牵着走。在亲密关系中，适度说出“我听见了”会让这份客观更有温度。' },
+    { i: 4, high: '这次作答里，你对未知和新鲜事物的接受度更高。挑战会带来兴奋，也值得在出发前替自己留一条回看的路。', low: '这次作答里，你更看重稳妥与可控。这会保护你，也可以在风险较小的事情上，为自己留一点试试看的余地。' },
+    { i: 5, high: '这次作答里，你在长期投入和抗挫上的倾向更明显。当事情变得漫长时，你依然更愿意继续往前推进。', low: '这次作答里，长期坚持未必是你最先调用的方式。把大目标拆成能得到反馈的小步骤，往往会让你走得更轻松。' }
+  ];
+  const c = document.getElementById('result-dim-insights');
+  const indexed = norm.map((v, i) => ({ v, i })).sort((a, b) => b.v - a.v);
+  const topIdx = new Set(indexed.slice(0, 2).map(t => t.i));
+  const bottomIdx = new Set(indexed.slice(4, 6).map(t => t.i));
+  c.innerHTML = insights.map(ins => {
+    const isHigh = topIdx.has(ins.i);
+    const isLow = bottomIdx.has(ins.i);
+    if (!isHigh && !isLow) return '';
+    const level = isHigh ? '较突出' : '相对靠后';
+    return `
+      <div class="dim-insight-item">
+        <div class="dim-insight-header">
+          <span class="dim-insight-name">${DIMS[ins.i]}</span>
+          <span class="dim-insight-score">本次作答</span>
+          <span class="dim-insight-level">${level}</span>
+        </div>
+        <div class="dim-insight-text">${isHigh ? ins.high : ins.low}</div>
+      </div>`;
+  }).join('');
+}
+
+function cssVar(name) {
+  return getComputedStyle(document.body).getPropertyValue(name).trim();
+}
+
+function getBarColor(value) {
+  const rgb = cssVar('--accent-rgb');
+  if (value >= 75) return `linear-gradient(90deg, rgba(${rgb},0.95) 0%, rgba(${rgb},0.75) 100%)`;
+  if (value >= 55) return `linear-gradient(90deg, rgba(${rgb},0.7) 0%, rgba(${rgb},0.5) 100%)`;
+  if (value >= 35) return `linear-gradient(90deg, rgba(${rgb},0.42) 0%, rgba(${rgb},0.26) 100%)`;
+  return `linear-gradient(90deg, rgba(${rgb},0.22) 0%, rgba(${rgb},0.12) 100%)`;
+}
+
+function drawChart(user, fig) {
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  const accent = cssVar('--accent');
+  const accentRGB = cssVar('--accent-rgb');
+  const warmRGB = cssVar('--warm-rgb');
+  const labelColor = cssVar('--text-secondary');
+  const cardBg = cssVar('--bg-card');
+  if (chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: DIMS,
+      datasets: [{
+        label: '你的特征',
+        data: user,
+        backgroundColor: `rgba(${accentRGB},0.12)`,
+        borderColor: accent,
+        borderWidth: 2.5,
+        pointBackgroundColor: accent,
+        pointBorderColor: cardBg,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }, {
+        label: fig.name + '基准',
+        data: fig.scores,
+        backgroundColor: `rgba(${warmRGB},0.06)`,
+        borderColor: `rgba(${warmRGB},0.5)`,
+        borderDash: [4,3],
+        borderWidth: 1.5,
+        pointBackgroundColor: `rgba(${warmRGB},0.6)`,
+        pointBorderColor: cardBg,
+        pointRadius: 2
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      scales: {
+        r: {
+          angleLines: { color: `rgba(${accentRGB},0.08)` },
+          grid: { color: `rgba(${accentRGB},0.08)` },
+          pointLabels: { font: { size: 12, family: 'Inter', weight: '500' }, color: labelColor },
+          ticks: { display: false, min: 0, max: 100 },
+          suggestedMin: 0, suggestedMax: 100
+        }
+      },
+      plugins: {
+        legend: { position: 'bottom', labels: { color: labelColor, font: { size: 12 }, padding: 20, usePointStyle: true } }
+      }
+    }
+  });
+}
+
+function drawBars(scores) {
+  const c = document.getElementById('dim-bars');
+  c.innerHTML = '';
+  const ranked = scores.map((v, i) => ({ v, i })).sort((a, b) => b.v - a.v);
+  const rankMap = {};
+  ranked.forEach((r, idx) => { rankMap[r.i] = idx + 1; });
+  const topSet = new Set([ranked[0].i, ranked[1].i]);
+  DIMS.forEach((d, i) => {
+    const row = document.createElement('div');
+    row.className = 'dim-row' + (topSet.has(i) ? ' top' : '');
+    row.innerHTML = `
+      <span class="dim-rank">${rankMap[i]}</span>
+      <span class="dim-name">${d}</span>
+      <div class="dim-bar-bg"><div class="dim-bar-fill" style="width:${scores[i]}%;background:${getBarColor(scores[i])}"></div></div>
+      <span class="dim-value">${scores[i]}</span>`;
+    c.appendChild(row);
+  });
+}
+
+
+const THEMES = [
+  { id: 'azure', name: '青花 · 瓷韵', bg: '#eef4fb', accent: '#2563eb' },
+  { id: 'paper', name: '宣纸 · 古籍', bg: '#f1e8d5', accent: '#a3532e' },
+  { id: 'fresh', name: '青瓷 · 清新', bg: '#f4f8f9', accent: '#3da89c' },
+  { id: 'crimson', name: '朱砂 · 宫墙', bg: '#f8efec', accent: '#b04040' }
+];
+let currentThemeId = 'azure';
+let lastResultData = null;
+
+function applyTheme(id, refresh) {
+  currentThemeId = id;
+  document.body.setAttribute('data-theme', id);
+  try { localStorage.setItem('lsyx-theme', id); } catch (e) {}
+  renderThemeOptions();
+  if (refresh) refreshThemeColors();
+}
+
+function refreshThemeColors() {
+  if (lastResultData && !document.getElementById('screen-result').classList.contains('hidden')) {
+    drawChart(lastResultData.norm, lastResultData.figure);
+    drawBars(lastResultData.norm);
+  }
+}
+
+function toggleThemePanel(e) {
+  if (e) e.stopPropagation();
+  document.getElementById('theme-panel').classList.toggle('hidden');
+}
+
+function renderThemeOptions() {
+  const c = document.getElementById('theme-options');
+  c.innerHTML = THEMES.map(t => `
+    <button type="button" class="theme-option${t.id === currentThemeId ? ' active' : ''}" onclick="applyTheme('${t.id}', true)">
+      <span class="theme-swatch" style="background:linear-gradient(135deg, ${t.bg} 50%, ${t.accent} 50%)"></span>
+      <span class="theme-option-name">${t.name}</span>
+      <span class="theme-check">✓</span>
+    </button>
+  `).join('');
+}
+
+document.addEventListener('click', (e) => {
+  const sw = document.querySelector('.theme-switcher');
+  if (sw && !sw.contains(e.target)) document.getElementById('theme-panel').classList.add('hidden');
+});
+
+(function initTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem('lsyx-theme'); } catch (e) {}
+  if (saved && THEMES.some(t => t.id === saved)) currentThemeId = saved;
+  document.body.setAttribute('data-theme', currentThemeId);
+  renderThemeOptions();
+})();
+
+function shareResult() {
+  const name = document.getElementById('result-name').textContent;
+  const title = document.getElementById('result-title').textContent;
+  const text = `我的历史人物原型是「${name} · ${title}」。\n你也来测测你的精神原型？`;
+  if (navigator.share) {
+    navigator.share({ title: '历史人物原型测试', text }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => alert('结果已复制到剪贴板')).catch(() => {});
+  }
+}
+</script>
+</body>
+</html>
